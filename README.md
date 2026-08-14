@@ -18,10 +18,12 @@ This repository contains my personal programming practice codes, syntax logic, a
 
 | Folder | Language | Topics / Notes |
 | :--- | :--- | :--- |
-| 📁 `Python/` | **Python 3** | Basics, Syntax, OOPs, Automation Logic |
-| 📁 `CSharp/` | **C#** | C# Fundamentals, Game Architecture Logic, Classes |
-| 📁 `CPlusPlus/` | **C++** | Data Structures, Pointers, Memory Basics |
-| 📁 `Java/` | **Java** | Core OOPs Concepts & Practice Programs |
+| 📁 `CSharp/` | **C#** | Core Logic, OOPs Concepts, Game Scripting Practice |
+| 📁 `CPlusPlus/` | **C++** | Data Structures, Memory Management, Logic Building |
+| 📁 `Java/` | **Java** | OOPs Fundamentals, Class Architecture, Practice Tasks |
+| 📁 `JavaScript/` | **JavaScript** | ES6+ Logic, DOM Manipulation, Async Basics |
+| 📁 `Kotlin/` | **Kotlin** | Android Logic Building, Syntax Practice, Null Safety |
+| 📁 `Python/` | **Python 3** | Basic-to-Advance Logic, Automation, Algorithms |
 
 ---
 
