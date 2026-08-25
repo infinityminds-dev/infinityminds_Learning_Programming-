@@ -1,14 +1,23 @@
-# 🐍 Python Core Logic & Automation Lab
+# # 🐍 Python Core Logic & AI Lab
 
-This directory houses my Python practice scripts focusing on algorithm fundamentals, modular programming, data handling, and syntax efficiency.
-
----
-
-### 🧠 Core Concepts Mastered
-- **Data Structures:** Lists, Dictionaries, Sets, and Tuples.
-- **Control Flow:** Loops, Decision Making, and Functional Decomposition.
-- **Logic Building:** Automation scripts, string manipulation, and error handling.
+This directory houses my Python practice scripts focusing on algorithm fundamentals, modular programming, data structures, and deep AI architecture built from scratch.
 
 ---
 
-> 🛠️ *Aim: Building backend scripting efficiency and rapid prototyping logic in Python 3.*
+### 📂 Directory Overview
+
+| Sub-Folder / File | Category | Description |
+| :--- | :--- | :--- |
+| `AI_From_Scratch/` | **Artificial Intelligence** | Neural networks, mathematical foundations, and LLM mechanics built without external frameworks. |
+| `DSA.py` | **Data Structures** | Algorithms and fundamental data structure implementations. |
+| `game.py` | **Game Logic** | Basic interactive scripting and core state loops. |
+| `test.py` / `test2.py` | **Experiments** | Rapid prototyping, logic testing, and syntax trials. |
+
+---
+
+### 🧠 Core Concepts Covered
+* **Data Structures:** Lists, Dictionaries, Sets, Tuples, and Custom Matrices.
+* **Control Flow:** Loops, Decision Making, and Functional Decomposition.
+* **AI & Mathematics:** Neural Network mechanics, Gradient Descent, Softmax/Sigmoid activations, and Tokenization.
+
+> 🛠️ *Aim: Building backend scripting efficiency, algorithmic strength, and AI mechanics from the ground up in Python 3.*
