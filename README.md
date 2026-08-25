@@ -1,33 +1,32 @@
-# <h1 align="center">📚 Learning Programming - Code Vault</h1>
+# # 📚 Learning Programming - Code Vault
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Status-Active_Learning-brightgreen?style=for-the-badge&logo=github" />
-  <img src="https://img.shields.io/badge/Focus-C%23_%26_Python-00599C?style=for-the-badge" />
-</p>
+![STATUS](https://img.shields.io/badge/STATUS-ACTIVE_LEARNING-brightgreen)
+![FOCUS](https://img.shields.io/badge/FOCUS-C%23_%7C_PYTHON_%7C_AI-blue)
 
 ---
 
 ### 📌 About This Repository
-This repository contains my personal programming practice codes, syntax logic, algorithm testing, and mini-exercises as I master various software development languages.
+This repository contains my personal programming practice codes, syntax logic, algorithm testing, and mini-exercises as I master various software development languages and core system architecture.
 
-> ⚠️ **Note:** This repository is specifically dedicated to syntax learning, core concepts, and logic building. It does not contain full production-ready app/web applications.
+> ⚠️ **Note:** This repository is specifically dedicated to syntax learning, core concepts, logic building, and AI mechanics built from scratch.
 
 ---
 
-### 📂 Directory & Languages Covered
+### 📁 Directory & Languages Covered
 
 | Folder | Language | Topics / Notes |
 | :--- | :--- | :--- |
-| 📁 `CSharp/` | **C#** | Core Logic, OOPs Concepts, Game Scripting Practice |
-| 📁 `CPlusPlus/` | **C++** | Data Structures, Memory Management, Logic Building |
-| 📁 `Java/` | **Java** | OOPs Fundamentals, Class Architecture, Practice Tasks |
-| 📁 `JavaScript/` | **JavaScript** | ES6+ Logic, DOM Manipulation, Async Basics |
-| 📁 `Kotlin/` | **Kotlin** | Android Logic Building, Syntax Practice, Null Safety |
-| 📁 `Python/` | **Python 3** | Basic-to-Advance Logic, Automation, Algorithms |
+| `CSharp/` | C# | Core Logic, OOPs Concepts, Game Scripting Practice |
+| `CPlusPlus/` | C++ | Data Structures, Memory Management, Logic Building |
+| `Java/` | Java | OOPs Fundamentals, Class Architecture, Practice Tasks |
+| `JavaScript/` | JavaScript | ES6+ Logic, DOM Manipulation, Async Basics |
+| `Kotlin/` | Kotlin | Android Logic Building, Syntax Practice, Null Safety |
+| `Python/` | Python 3 | Basic-to-Advance Logic, Automation, Algorithms |
+| `Python/AI_From_Scratch/` | Python / Math | Neural Networks, Backpropagation, Tokenization, LLM Mechanics |
 
 ---
 
 ### 🎯 Goal
-To strengthen fundamental programming skills and naturally shift GitHub activity metrics toward **C#, Python, and Core Logic**.
+To strengthen fundamental programming skills, master core computer science mechanics, and build deep-level logic from low-level systems to AI architectures.
 
-<p align="center"><i>Happy Coding! 🚀</i></p>
+*Happy Coding! 🚀*
