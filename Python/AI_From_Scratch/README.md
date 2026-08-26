@@ -1,24 +1,37 @@
-# 🧠 AI From Scratch - Mathematical & Neural Engine
+# 🧠 Self-Learning Conversational AI Engine
 
-This sub-directory contains custom implementations of Artificial Intelligence, Machine Learning algorithms, and Large Language Model (LLM) mechanics—built completely from scratch using Python and linear algebra, avoiding high-level frameworks like PyTorch or TensorFlow.
-
----
-
-### 🚀 Core Modules & Concepts
-
-* **Neural Networks:** Multi-layer Perceptrons (MLP), forward pass, activation functions (Sigmoid, ReLU, Softmax).
-* **Backpropagation Engine:** Gradient calculation and optimization via Stochastic Gradient Descent (SGD).
-* **LLM Architecture Mechanics:** Tokenization, Bag-of-Words, Vector Embeddings, and Next-Token Probability Prediction.
+A lightweight, zero-heavy-dependency Python AI engine built completely from scratch. It features live interactive self-learning, multi-query splitting, full session history tracking, built-in math calculation, and a smart multi-user memory merging system!
 
 ---
 
-### 📋 Scripts & Projects
+### 🚀 Core Features & Capabilities
 
-| Script Name | Purpose | Key Concept |
+* **Live Interactive Training:** If the AI doesn't understand a query, it interactively asks you for the correct response and updates its brain instantly.
+* **Auto-Correct (Fuzzy Matching):** Uses spelling similarity checks (`difflib`) to handle minor typos seamlessly.
+* **Multi-Sentence Splitting:** Can break down complex or multi-part user messages (joined by commas or "aur") to handle them sequentially.
+* **Dynamic Math Solver:** Instantly evaluates arithmetic expressions directly within the chat.
+* **Full Session Chat History:** Remembers the entire active conversation thread until you exit.
+* **Smart Memory Merging:** Safely combines training data from multiple contributors without risking priority data loss.
+
+---
+
+### 📋 Project Structure & Files
+
+| File Name | Purpose | Key Concept |
 | :--- | :--- | :--- |
-| `working_ai_chat.py` | Standalone Interactive AI Chatbot | Neural intent classification & dynamic response engine. |
-| `mini_llm_simulator.py` | Simulated LLM Mechanism | Tokenization, dot-product attention, and autoregressive generation. |
+| `main_engine.py` | Main Conversational Runtime | Live training, auto-correct, session context, and math processing. |
+| `merge_memory.py` | Multi-User Memory Merger | Safely merges friend training JSONs into your master brain. |
+| `ai_memory_*.json` | Persistent AI Brain File | Dynamic JSON storage for patterns, intents, and trained responses. |
 
 ---
 
-> 🎯 *Objective: To master the low-level linear algebra, calculus, and matrix operations that power modern AI systems.*
+### 🛠️ How to Run & Train
+Start the AI Engine:
+Run the following command in your terminal:
+python main_engine.py
+Train Live:
+Chat naturally. If an input is unknown, the AI will prompt you: "Mujhe iska matlab nahi pata... toh kya jawab doon?" Type the response, and it will be saved permanently!
+Merge Friend Memories:
+Place your friends' exported JSON files in the directory and run:
+python merge_memory.py
+   
