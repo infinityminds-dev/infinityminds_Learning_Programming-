@@ -156,7 +156,33 @@ class MainAIEngine:
       "Main INFINITY-AI hoon. Mujhe Pankaj Singh ne Python me scratch se banaya hai. Agar aapko developer ke baare me aur jaanna hai toh unke GitHub pe jaa sakte hain aur unke Discord pe pooch sakte hain sawal ya koi suggestion. Discord ki link unke GitHub profile me hai.\n\nDeveloper GitHub Profile: infinityminds-dev"
     ],
     "context_responses": {}
+  },
+    {
+    "tag": "tech_coding_fallback",
+    "patterns": [
+      "python",
+      "coding",
+      "code",
+      "programming",
+      "javascript",
+      "html",
+      "css",
+      "java",
+      "c++",
+      "bug",
+      "error",
+      "loop",
+      "function",
+      "array",
+      "database",
+      "sql"
+    ],
+    "responses": [
+      "Mujhe abhi coding aur tech ke baare me zyada jankari nahi hai. Iske liye aap ChatGPT ya Gemini jaise Large Language Models (LLM) se pooch sakte hain. Developer ne abhi mujhe itna develop nahi kiya hai, lekin in future main iska jawab zaroor de paunga!"
+    ],
+    "context_responses": {}
   }
+
 
         
  ]
