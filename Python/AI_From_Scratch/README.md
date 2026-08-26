@@ -17,21 +17,68 @@ A lightweight, zero-heavy-dependency Python AI engine built completely from scra
 
 ### 📋 Project Structure & Files
 
-| File Name | Purpose | Key Concept |
-| :--- | :--- | :--- |
-| `main_engine.py` | Main Conversational Runtime | Live training, auto-correct, session context, and math processing. |
-| `merge_memory.py` | Multi-User Memory Merger | Safely merges friend training JSONs into your master brain. |
-| `ai_memory_*.json` | Persistent AI Brain File | Dynamic JSON storage for patterns, intents, and trained responses. |
+| File Name          | Purpose                     | Key Concept                                                        |
+| :----------------- | :-------------------------- | :----------------------------------------------------------------- |
+| `main_engine.py`   | Main Conversational Runtime | Live training, auto-correct, session context, and math processing. |
+| `merge_memory.py`  | Multi-User Memory Merger    | Safely merges friend training JSONs into your master brain.        |
+| `ai_memory_*.json` | Persistent AI Brain File    | Dynamic JSON storage for patterns, intents, and trained responses. |
 
 ---
 
-### 🛠️ How to Run & Train
-Start the AI Engine:
-Run the following command in your terminal:
+## 🛠️ How to Run & Train
+
+### 1. ▶️ Start the AI Engine
+
+Open your terminal in the project directory and run:
+
+```bash
 python main_engine.py
-Train Live:
-Chat naturally. If an input is unknown, the AI will prompt you: "Mujhe iska matlab nahi pata... toh kya jawab doon?" Type the response, and it will be saved permanently!
-Merge Friend Memories:
-Place your friends' exported JSON files in the directory and run:
+```
+
+This will start the AI engine and open the interactive chat session.
+
+### 2. 🧠 Train Live & Chat
+
+Chat naturally with the AI.
+
+If the AI doesn't understand your input, it will ask:
+
+> **"Mujhe iska matlab nahi pata... toh kya jawab doon?"**
+
+Type the response you want the AI to learn.
+
+The custom response will be saved **permanently** into the AI's memory file, allowing the AI to use the learned response in future conversations.
+
+### 3. 🤝 Merge Friend Memories
+
+To combine training data from your friends:
+
+1. Place your friends' exported JSON memory files inside the project directory.
+2. Make sure the files contain the required AI memory data.
+3. Run the merge script:
+
+```bash
 python merge_memory.py
-   
+```
+
+The merge system will combine the available training data into your master AI memory while protecting existing priority data.
+
+### 4. 🔄 Typical Workflow
+
+```text
+Start AI
+   ↓
+Chat with AI
+   ↓
+Unknown input?
+   ↓
+AI asks for the correct response
+   ↓
+Enter your response
+   ↓
+Response is saved to memory
+   ↓
+AI learns and uses it later
+   ↓
+Merge friend memories when needed
+```
