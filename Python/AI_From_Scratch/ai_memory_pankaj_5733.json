@@ -1,0 +1,98 @@
+[
+  {
+    "tag": "greeting",
+    "patterns": [
+      "hi",
+      "hello",
+      "hey",
+      "namaste"
+    ],
+    "responses": [
+      "Hello {name}!",
+      "Oi {name}, kaise ho?",
+      "Hey {name}! Kya chal raha hai?"
+    ]
+  },
+  {
+    "tag": "ask_status",
+    "patterns": [
+      "kya kar rahe ho",
+      "kya chal raha hai",
+      "aur batao"
+    ],
+    "responses": [
+      "Bas tumse baat kar raha hoon! Tum batao?",
+      "Kuch khas nahi {name}, tum batao kya naya hai?"
+    ]
+  },
+  {
+    "tag": "ask_problem",
+    "patterns": [
+      "kya hua",
+      "koi dikkat hai",
+      "pareshan ho kya"
+    ],
+    "responses": [
+      "Kuch pareshani hai kya {name}?",
+      "Kya hua bhai, sab theek toh hai?"
+    ]
+  },
+  {
+    "tag": "kuch_nahi_handler",
+    "patterns": [
+      "kuch nahi",
+      "kuch nhi",
+      "kuch n"
+    ],
+    "context_responses": {
+      "ask_status": [
+        "Accha, matlab chill chal raha hai!",
+        "Sahi hai bhai, thoda aaram bhi zaroori hai."
+      ],
+      "ask_problem": [
+        "Chalo accha hai koi dikkat nahi hai!",
+        "Badhiya, tension mat lo fir."
+      ],
+      "default": [
+        "Accha thik hai {name}!",
+        "Hmm, aage batao fir!"
+      ]
+    }
+  },
+  {
+    "tag": "custom_1056",
+    "patterns": [
+      "kya kar raha hai"
+    ],
+    "responses": [
+      "kuch nahi tum se baat aur batao"
+    ]
+  },
+  {
+    "tag": "custom_3052",
+    "patterns": [
+      "clear"
+    ],
+    "responses": [
+      "isko clear kar na hai kya bol raha hai bhai"
+    ]
+  },
+  {
+    "tag": "custom_9841",
+    "patterns": [
+      "tgeek hu"
+    ],
+    "responses": [
+      "ok toh kya Plan hai aaj ka"
+    ]
+  },
+  {
+    "tag": "custom_8769",
+    "patterns": [
+      "good"
+    ],
+    "responses": [
+      "thankyou bhai"
+    ]
+  }
+]
