@@ -26,8 +26,8 @@
       "sab sahi hai"
     ],
     "responses": [
-      "Sahi hai bhai, aise hi mast raho!",
-      "Accha laga sunkar {name}!"
+      "Sahi hai bhai, aise hi mast raho! 😎",
+      "Accha laga sunkar {name}! 🔥"
     ],
     "context_responses": {}
   },
@@ -46,7 +46,7 @@
     "responses": [
       "Sahi hai bhai!",
       "Haan {name}, aur batao?",
-      "Got it!"
+      "Got it! 👍"
     ],
     "context_responses": {}
   },
@@ -59,9 +59,9 @@
       "dhanyawad"
     ],
     "responses": [
-      "Arre koi baat nahi {name} bhai!",
+      "Arre koi baat nahi {name} bhai! 🙌",
       "Welcome bhai!",
-      "Always happy to help!"
+      "Always happy to help! ✨"
     ],
     "context_responses": {}
   },
@@ -75,8 +75,8 @@
       "alvida"
     ],
     "responses": [
-      "Bye {name}! Phir milte hain.",
-      "Chalo sahi hai, apna khyal rakhna!"
+      "Bye {name}! Phir milte hain. 👋",
+      "Chalo sahi hai, apna khyal rakhna! Take care."
     ],
     "context_responses": {}
   },
@@ -92,7 +92,7 @@
     ],
     "responses": [
       "Theek hai bhai, samajh gaya.",
-      "Okay {name} bhai! Jab bhi zarurat ho, aawaz dena.",
+      "Okay {name} bhai! Jab bhi zarurat ho, aawaz dena. 🤝",
       "Sahi hai! Phir kabhi fursat me baat karte hain."
     ],
     "context_responses": {}
@@ -109,16 +109,16 @@
       "oo bahi good"
     ],
     "responses": [
-      "Shukriya {name} bhai!",
-      "Thanks {name}!",
-      "Khushi hui sunkar!"
+      "Shukriya {name} bhai! Dil jeet liya! ❤️",
+      "Thanks {name}! 🚀",
+      "Khushi hui sunkar! 😊"
     ],
     "context_responses": {}
   },
   {
     "tag": "bot_identity",
     "patterns": [
-      "tum kon ho",
+      "tum kon hon",
       "tum kaun ho",
       "who are you",
       "tumhe kisne banaya",
@@ -129,7 +129,7 @@
       "tera naam"
     ],
     "responses": [
-      "Main INFINITY-AI hoon. Mujhe Pankaj Singh ne Python me scratch se banaya hai. Agar aapko developer ke baare me aur jaanna hai toh unke GitHub pe jaa sakte hain aur unke Discord pe pooch sakte hain sawal ya koi suggestion. Discord ki link unke GitHub profile me hai.\n\nDeveloper GitHub Profile: infinityminds-dev"
+      "Main INFINITY-AI hoon! 🤖 Mujhe Pankaj Singh ne Python me scratch se banaya hai. Agar aapko developer ke baare me aur jaanna hai toh unke GitHub pe jaa sakte hain aur unke Discord pe pooch sakte hain sawal ya koi suggestion. Discord ki link unke GitHub profile me hai.\n\nDeveloper GitHub Profile: infinityminds-dev"
     ],
     "context_responses": {}
   },
@@ -147,14 +147,14 @@
       "kya plan hai aaj ka"
     ],
     "responses": [
-      "Arre bhai mood ke hisab se plan banao! Agar energy hai toh thodi coding kar lo ya koi naya project try kar lo. Thoda chill karna hai toh mast music suno ya koi game khel lo. Aur agar bilkul bhi man nahi kar raha toh aaram se rest kar lo, dosto se baat kar lo ya thodi der walk pe ho aao. Aap batao, kis cheez ka mood hai?"
+      "Arre bhai mood ke hisab se plan banao! 🎯 Agar energy hai toh thodi coding kar lo ya koi naya project try kar lo 💻. Thoda chill karna hai toh mast music suno 🎧 ya koi game khel lo 🎮. Aur agar bilkul bhi man nahi kar raha toh aaram se rest kar lo 🛌, dosto se baat kar lo 🗣️ ya thodi der walk pe ho aao 🚶‍♂️. Aap batao, kis cheez ka mood hai?"
     ],
     "context_responses": {
-      "music": "Mast playlist lagao aur headphone pehen ke chill karo bhai!",
-      "game": "Kaunsa game khelne ka plan hai? PC game ya mobile game?",
-      "mobile": "Mast BGMI, Free Fire ya Call of Duty lagao aur dosto ke saath machao!",
-      "pc": "Sahi hai! GTA, Valorant ya Counter-Strike me se kya chalayein?",
-      "coding": "Sahi hai! Aaj kaunsa naya feature code karne wale ho?"
+      "music": "Mast playlist lagao aur headphone pehen ke chill karo bhai! 🎧🎶",
+      "game": "Kaunsa game khelne ka plan hai? PC game ya mobile game? 🎮🔥",
+      "mobile": "Mast BGMI, Free Fire ya Call of Duty lagao aur dosto ke saath machao! 📱💥",
+      "pc": "Sahi hai! GTA, Valorant ya Counter-Strike me se kya chalayein? 🖥️🎯",
+      "coding": "Sahi hai! Aaj kaunsa naya feature code karne wale ho? 💻⚡"
     }
   },
   {
@@ -167,7 +167,7 @@
       "gaane sunne hain"
     ],
     "responses": [
-      "Haan bhai! Music sun ke mind ekdam relax ho jata hai. Apne favorite songs lagao aur chill karo!"
+      "Haan bhai! Music sun ke mind ekdam relax ho jata hai 🎶. Apne favorite songs lagao aur chill karo!"
     ],
     "context_responses": {}
   },
@@ -181,7 +181,7 @@
       "chal game khelte hain"
     ],
     "responses": [
-      "Sahi hai bhai! Konsa game khelne ka socha hai?"
+      "Sahi hai bhai! 🎮 Konsa game khelne ka socha hai?"
     ],
     "context_responses": {}
   },
@@ -214,7 +214,7 @@
       "loop kya hai"
     ],
     "responses": [
-      "Mujhe abhi coding aur tech ke baare me zyada jankari nahi hai. Iske liye aap ChatGPT ya Gemini jaise Large Language Models (LLM) se pooch sakte hain. Developer ne abhi mujhe itna develop nahi kiya hai, lekin in future main iska jawab zaroor de paunga!"
+      "Mujhe abhi coding aur tech ke baare me zyada jankari nahi hai 😅. Iske liye aap ChatGPT ya Gemini jaise Large Language Models (LLM) se pooch sakte hain 🤖. Developer ne abhi mujhe itna develop nahi kiya hai, lekin in future main iska jawab zaroor de paunga!"
     ],
     "context_responses": {}
   },
@@ -229,7 +229,7 @@
       "man nahi hai aaj"
     ],
     "responses": [
-      "Toh mat kar bhai! Aaj rest kar lo, fresh mind ke saath kal machayenge."
+      "Toh mat kar bhai! 🛌 Aaj rest kar lo, fresh mind ke saath kal machayenge 🔥"
     ],
     "context_responses": {}
   },
@@ -241,7 +241,7 @@
       "apna batao"
     ],
     "responses": [
-      "Main bhi ekdam mast hu bhai! Aap batao koi kaam ho toh."
+      "Main bhi ekdam mast hu bhai! 😎 Aap batao koi kaam ho toh"
     ],
     "context_responses": {}
   },
@@ -252,7 +252,7 @@
       "oo"
     ],
     "responses": [
-      "Yes bhai!"
+      "Yes bhai! 💯"
     ],
     "context_responses": {}
   },
@@ -266,7 +266,7 @@
       "what can you do"
     ],
     "responses": [
-      "Main aapka personal AI assistant hoon! Main ye sab kar sakta hoon:\n1. Mood ke hisab se activity suggest kar sakta hoon.\n2. Math calculations solve kar sakta hoon.\n3. Session history aur purane sawal yaad rakh sakta hoon.\n4. Naye jawab seekh kar memory save kar sakta hoon.\n5. Context samajh kar multi-turn conversation kar sakta hoon!\n\nAap batao, main aapki kya help karoon?"
+      "Main aapka personal AI assistant hoon! 🚀 Main ye sab kar sakta hoon:\n1. Mood ke hisab se activity suggest kar sakta hoon 🎯\n2. Math calculations solve kar sakta hoon 🧮\n3. Session history aur purane sawal yaad rakh sakta hoon 🧠\n4. Naye jawab seekh kar memory save kar sakta hoon 💾\n5. Context samajh kar multi-turn conversation kar sakta hoon! 🔄\n\nAap batao, main aapki kya help karoon?"
     ],
     "context_responses": {}
   },
@@ -279,7 +279,7 @@
       "kya kar rahe ho"
     ],
     "responses": [
-      "Bas {name} bhai, aapke messages ka wait kar raha hoon aur apni memory update kar raha hoon! Aap batao, kya chal raha hai?"
+      "Bas {name} bhai, aapke messages ka wait kar raha hoon aur apni memory update kar raha hoon! ⚡ Aap batao, kya chal raha hai?"
     ],
     "context_responses": {}
   },
@@ -289,7 +289,7 @@
       "i am back"
     ],
     "responses": [
-      "oo bhai agaya chal bata koi kam hai"
+      "Oo bhai aa gaya! 🔥 Chal bata koi kaam hai?"
     ],
     "context_responses": {}
   },
@@ -298,10 +298,10 @@
     "patterns": [
       "good Morning bhai",
       "good morning",
-      "good morning bro "
+      "good morning bro"
     ],
     "responses": [
-      "good Morning bhai Uth gaya so ke ab bata kya karna hai "
+      "Good Morning bhai! 🌅 Uth gaya so ke, ab bata kya karna hai?"
     ],
     "context_responses": {}
   },
@@ -313,7 +313,7 @@
       "good night bro"
     ],
     "responses": [
-      "good Night Bhai sweet dreams"
+      "Good Night Bhai! 🌙 Sweet dreams!"
     ],
     "context_responses": {}
   },
@@ -325,8 +325,56 @@
       "good evening bro"
     ],
     "responses": [
-      "Good Evening bhai kya plan hai aaj ka"
+      "Good Evening bhai! 🌆 Kya plan hai aaj ka?"
+    ],
+    "context_responses": {}
+  },
+  {
+    "tag": "custom_afternoon",
+    "patterns": [
+      "good afternoon",
+      "good afternoon bhai",
+      "afternoon bro"
+    ],
+    "responses": [
+      "Good Afternoon {name} bhai! ☀️ Khana peena ho gaya ya nahi?"
+    ],
+    "context_responses": {}
+  },
+  {
+    "tag": "custom_jokes",
+    "patterns": [
+      "joke sunao",
+      "chutkula sunao",
+      "koi joke batao",
+      "hassa do bhai"
+    ],
+    "responses": [
+      "Teacher: 1 se 10 tak ginti sunao!\nStudent: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10!\nTeacher: Shabash! Aage?\nStudent: J, Q, K! 🃏😂",
+      "Ek aadmi doctor ke paas gaya: Doctor sahab jab mai chai pita hu to meri aakh me dard hota hai!\nDoctor: Pehle cup me se chammach nikal liya karo! ☕😜",
+      "Pappu: Yaar mera mobile pani me gir gaya aur kharab ho gaya.\nFriend: Toh dukandar ko dikhaya?\nPappu: Haan, usne bola isme rice me daal ke rakho.\nFriend: Phir kya hua?\nPappu: Kucch nahi, mobile chawal ke sath pak gaya! 📱🍚",
+      "Teacher: Tumne kal homework kyon nahi kiya?\nStudent: Sir, bijli nahi thi.\nTeacher: Toh mombatti jala lete!\nStudent: Sir, maachis nahi thi.\nTeacher: Maachis kyon nahi thi?\nStudent: Pooja ke ghar me rakhi thi.\nTeacher: Toh wahan se le aate!\nStudent: Sir, nahaaya hua nahi tha! 🕯️🤣",
+      "Customer: Bhai, is phone me net fast chalta hai kya?\nDukandar: Pata nahi bhai, kal ek banda le gaya tha, aaj tak wapas hi nahi aaya... speed me kahin aage nikal gaya hoga! 🚀📱",
+      "Papa: Beta tumhare result ka kya hua?\nBeta: Papa, doctor ka beta doctor bana, engineer ka beta engineer!\nPapa: Aur tum?\nBeta: Main toh mazdoor ka beta hoon na papa, toh fail ho gaya! 👷‍♂️📖",
+      "Husband: Aaj khane me kya banaya hai?\nWife: Jo tumne kal bola tha na wahi!\nHusband: Par kal toh maine bola tha ki zahar de do!\nWife: Toh bas wahi bana diya hai, chup chap kha lo! 🍜💀🤣",
+      "Santa: Yaar, mera dimaag bohot tez chalta hai!\nBanta: Kaise?\nSanta: Kal train chootne me 2 min bache the, main 1 min pehle hi pahunch gaya! 🏃‍♂️🚂",
+      "Boy: Tum itni sundar kaise ho?\nGirl: God ki kripa hai!\nBoy: Lagta hai God ne tum par poori kripa kar di, baaki sab par aalsi ho gaye! 🙄✨",
+      "Doctor: Aapko kaunsa rog hai?\nPatient: Doctor sahab, jab bhi kaam karne lagta hoon, neend aane lagti hai!\nDoctor: Ye rog nahi, isse alsi-pan kehte hain! 🛌💤"
+    ],
+    "context_responses": {}
+  },
+  {
+    "tag": "custom_7212",
+    "patterns": [
+      "oo new respones",
+      "hahahahahhahaha",
+      "ya badiya tha",
+      "good joke"
+    ],
+    "responses": [
+      "Thank you bhai apki training ki vajah se 🥰🔥 "
     ],
     "context_responses": {}
   }
-    ]
+]
+  
