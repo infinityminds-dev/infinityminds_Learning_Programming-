@@ -17,7 +17,6 @@ class SmartIntentClassifier:
 
     def tokenize(self, text):
         words = re.findall(r"\w+", text.lower())
-        # Ignores weak conversational noise fillers for scoring
         ignore = {"bhai", "bro", "oo", "ooo", "aa", "aah"}
         filtered = [w for w in words if w not in ignore]
         return filtered if filtered else words
@@ -62,19 +61,16 @@ class SmartIntentClassifier:
             if total_words == 0:
                 continue
 
-            # 1. Word Matching Score
             score = 0.0
             for token in tokens:
                 if token in counts:
                     score += (counts[token] / total_words) * 1.5
 
-            # 2. Bi-gram Matching Bonus Score
             bigram_counts = self.intent_bigrams.get(tag, Counter())
             for bg in bigrams:
                 if bg in bigram_counts:
-                    score += 2.0  # Heavy weight for phrase match
+                    score += 2.0
 
-            # Normalize by query length scale
             score = score / (len(tokens) ** 0.4)
 
             if score > max_score:
@@ -93,13 +89,11 @@ class MainAIEngine:
         self.session_history = []
         self.last_unknown_query = None
 
-        # V2.0 & V3.0 Active Intent/Context Trackers
         self.current_context = None
 
         self.memory_file = self.handle_smart_memory_file()
         self.memory_db = []
 
-        # Neural Intent Classifier Initialization
         self.classifier = SmartIntentClassifier()
         self.load_memory()
 
@@ -162,7 +156,8 @@ class MainAIEngine:
         return new_file
 
     def load_memory(self):
-        default_data =[
+        default_data = [
+            
   {
     "tag": "greeting",
     "patterns": [
@@ -244,7 +239,7 @@ class MainAIEngine:
     ],
     "context_responses": {}
   },
-   {
+  {
     "tag": "agreement_disagreement",
     "patterns": [
       "haan",
@@ -260,7 +255,7 @@ class MainAIEngine:
       "Sahi hai! Phir kabhi fursat me baat karte hain."
     ],
     "context_responses": {}
-  }, 
+  },
   {
     "tag": "compliment",
     "patterns": [
@@ -269,7 +264,8 @@ class MainAIEngine:
       "great",
       "badiya",
       "bohot achha",
-      "mast"
+      "mast",
+      "oo bahi good"
     ],
     "responses": [
       "Shukriya {name} bhai!",
@@ -348,7 +344,7 @@ class MainAIEngine:
     ],
     "context_responses": {}
   },
-    {
+  {
     "tag": "tech_coding_fallback",
     "patterns": [
       "python",
@@ -419,7 +415,7 @@ class MainAIEngine:
     ],
     "context_responses": {}
   },
-   {
+  {
     "tag": "bot_capabilities",
     "patterns": [
       "tu kya kar sakta hai",
@@ -445,10 +441,55 @@ class MainAIEngine:
       "Bas {name} bhai, aapke messages ka wait kar raha hoon aur apni memory update kar raha hoon! Aap batao, kya chal raha hai?"
     ],
     "context_responses": {}
+  },
+  {
+    "tag": "custom_5567",
+    "patterns": [
+      "i am back"
+    ],
+    "responses": [
+      "oo bhai agaya chal bata koi kam hai"
+    ],
+    "context_responses": {}
+  },
+  {
+    "tag": "custom_6423",
+    "patterns": [
+      "good Morning bhai",
+      "good morning",
+      "good morning bro "
+    ],
+    "responses": [
+      "good Morning bhai Uth gaya so ke ab bata kya karna hai "
+    ],
+    "context_responses": {}
+  },
+  {
+    "tag": "custom_1812",
+    "patterns": [
+      "Good night bhai",
+      "good night",
+      "good night bro"
+    ],
+    "responses": [
+      "good Night Bhai sweet dreams"
+    ],
+    "context_responses": {}
+  },
+  {
+    "tag": "custom_5087",
+    "patterns": [
+      "Good evening",
+      "good evening bhai",
+      "good evening bro"
+    ],
+    "responses": [
+      "Good Evening bhai kya plan hai aaj ka"
+    ],
+    "context_responses": {}
   }
- 
 ]
-
+  
 
         if os.path.exists(self.memory_file):
             try:
@@ -460,7 +501,6 @@ class MainAIEngine:
             self.memory_db = default_data
             self.save_memory()
 
-        # Train Upgraded Neural Intent Classifier
         self.classifier.train(self.memory_db)
 
     def clean_text_for_json(self, text):
@@ -553,15 +593,15 @@ class MainAIEngine:
             "e": math.e,
         }
 
-        match = re.search(r"[\d\.\s\+\-\*\/\(\)\^\,\w]+", clean_text)
+        match = re.search(r"[\d\.\s\+\-\*\/\(\)\^\,]+", clean_text)
         if match:
             expr = match.group().strip()
-            expr = re.sub(r"[\+\-\*\/]+$", "", expr)
+            expr = re.sub(r"[\+\-\*\/]+$", "", expr).strip()
 
             has_op = any(op in expr for op in ["+", "-", "*", "/", "**"])
             has_func = any(fn in expr for fn in safe_dict.keys())
 
-            if has_op or has_func:
+            if (has_op or has_func) and len(expr) > 1:
                 try:
                     res = eval(expr, {"__builtins__": None}, safe_dict)
                     if isinstance(res, float) and res.is_integer():
@@ -644,12 +684,10 @@ class MainAIEngine:
 
         text_lower = sub_text.lower()
 
-        # 1. Context Check
         ctx_reply = self.check_context_reply(text_lower)
         if ctx_reply:
             return ctx_reply
 
-        # 2. Direct Pattern Matching
         for item in self.memory_db:
             if "patterns" in item and text_lower in [
                 p.lower() for p in item["patterns"]
@@ -660,18 +698,18 @@ class MainAIEngine:
                         "{name}", self.user_name
                     )
 
-        # 3. Upgraded Neural Intent Classifier Prediction (Fast & Smart)
-        predicted_tag, score = self.classifier.predict_intent(text_lower, threshold=0.20)
+        predicted_tag, score = self.classifier.predict_intent(
+            text_lower, threshold=0.20
+        )
         if predicted_tag:
             for item in self.memory_db:
                 if item.get("tag") == predicted_tag and item.get("responses"):
                     self.current_context = predicted_tag
-                    return random.choice(item["responses"]).replace("{name}", self.user_name)
+                    return random.choice(item["responses"]).replace(
+                        "{name}", self.user_name
+                    )
 
-        # 4. Elastic Fuzzy Match Fallback
-        fuzzy_item, similarity = self.find_fuzzy_match(
-            text_lower, cutoff=0.55
-        )
+        fuzzy_item, similarity = self.find_fuzzy_match(text_lower, cutoff=0.55)
         if fuzzy_item and "responses" in fuzzy_item:
             self.current_context = fuzzy_item.get("tag")
             return random.choice(fuzzy_item["responses"]).replace(
@@ -693,24 +731,37 @@ class MainAIEngine:
 
         self.session_history.append({"role": "user", "content": raw_text})
 
-        parts = re.split(r",|\s+aur\s+", raw_text, maxsplit=2)
+        # Upgraded Smart Multi-query Splitter (Math, Comma, Dot, Question Mark & Keywords)
+        math_pattern = r"(\d+[\+\-\*\/]+\d+[\+\-\*\/\d]*)"
+        prepared_text = re.sub(math_pattern, r", \1 ,", raw_text)
+        parts = re.split(r",|\.|\?|\s+aur\s+|\s+or\s+", prepared_text)
+
         responses = []
         unknown_part = None
 
         for part in parts:
-            ans = self.process_single_query(part)
-            if ans:
-                responses.append(ans)
-            else:
-                unknown_part = part.strip()
-                break
+            part_str = part.strip()
+            if not part_str:
+                continue
 
-        if unknown_part and not responses:
-            self.last_unknown_query = unknown_part
-            return f"Mujhe iska matlab nahi pata '{unknown_part}' ({self.user_name}). Jab main ye suno, toh kya jawab doon?"
+            ans = self.process_single_query(part_str)
+            if ans:
+                if ans not in responses:
+                    responses.append(ans)
+            else:
+                if len(part_str) > 2 and not part_str.isdigit():
+                    unknown_part = part_str
 
         if responses:
-            return " | ".join(responses)
+            if len(responses) == 1:
+                return responses[0]
+            else:
+                formatted_resp = "\n" + "\n".join([f"• {r}" for r in responses])
+                return formatted_resp
+
+        if unknown_part:
+            self.last_unknown_query = unknown_part
+            return f"Mujhe iska matlab nahi pata '{unknown_part}' ({self.user_name}). Jab main ye suno, toh kya jawab doon?"
 
         self.last_unknown_query = raw_text
         return f"Mujhe iska matlab nahi pata {self.user_name}. Jab main '{raw_text}' suno, toh kya jawab doon?"
@@ -721,7 +772,7 @@ if __name__ == "__main__":
     ai = MainAIEngine(user_name=user_name)
 
     print("\n========================================================")
-    print(f"  FINAL ENGINE V3.1 SMART ACTIVE | File: {ai.memory_file}")
+    print(f"  FINAL ENGINE V3.3 SMART ACTIVE | File: {ai.memory_file}")
     print("========================================================\n")
 
     print(f"AI: {ai.generate_proactive_greeting()}\n")
