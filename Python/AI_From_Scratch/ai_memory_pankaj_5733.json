@@ -5,94 +5,283 @@
       "hi",
       "hello",
       "hey",
-      "namaste"
+      "namaste",
+      "oi",
+      "hello bhai"
     ],
     "responses": [
       "Hello {name}!",
-      "Oi {name}, kaise ho?",
-      "Hey {name}! Kya chal raha hai?"
-    ]
+      "Oi {name}, kaise ho?"
+    ],
+    "context_responses": {}
   },
   {
-    "tag": "ask_status",
+    "tag": "status_ok",
     "patterns": [
-      "kya kar rahe ho",
-      "kya chal raha hai",
-      "aur batao"
+      "theek hu",
+      "thik hu",
+      "mast hu",
+      "badhiya hu",
+      "badiya hu",
+      "sab sahi hai"
     ],
     "responses": [
-      "Bas tumse baat kar raha hoon! Tum batao?",
-      "Kuch khas nahi {name}, tum batao kya naya hai?"
-    ]
+      "Sahi hai bhai, aise hi mast raho!",
+      "Accha laga sunkar {name}!"
+    ],
+    "context_responses": {}
   },
   {
-    "tag": "ask_problem",
+    "tag": "acknowledgement",
     "patterns": [
-      "kya hua",
-      "koi dikkat hai",
-      "pareshan ho kya"
+      "ok",
+      "okay",
+      "k",
+      "hmm",
+      "accha",
+      "achha",
+      "sahi hai",
+      "got it"
     ],
     "responses": [
-      "Kuch pareshani hai kya {name}?",
-      "Kya hua bhai, sab theek toh hai?"
-    ]
+      "Sahi hai bhai!",
+      "Haan {name}, aur batao?",
+      "Got it!"
+    ],
+    "context_responses": {}
   },
   {
-    "tag": "kuch_nahi_handler",
+    "tag": "courtesy",
     "patterns": [
-      "kuch nahi",
-      "kuch nhi",
-      "kuch n"
+      "thanks",
+      "thank you",
+      "shukriya",
+      "dhanyawad"
+    ],
+    "responses": [
+      "Arre koi baat nahi {name} bhai!",
+      "Welcome bhai!",
+      "Always happy to help!"
+    ],
+    "context_responses": {}
+  },
+  {
+    "tag": "goodbye",
+    "patterns": [
+      "bye",
+      "goodbye",
+      "chalo bye",
+      "see you",
+      "alvida"
+    ],
+    "responses": [
+      "Bye {name}! Phir milte hain.",
+      "Chalo sahi hai, apna khyal rakhna!"
+    ],
+    "context_responses": {}
+  },
+   {
+    "tag": "agreement_disagreement",
+    "patterns": [
+      "haan",
+      "ha",
+      "nahi",
+      "no",
+      "na",
+      "kuch nahi"
+    ],
+    "responses": [
+      "Theek hai bhai, samajh gaya.",
+      "Okay {name} bhai! Jab bhi zarurat ho, aawaz dena.",
+      "Sahi hai! Phir kabhi fursat me baat karte hain."
+    ],
+    "context_responses": {}
+  }, 
+  {
+    "tag": "compliment",
+    "patterns": [
+      "good",
+      "nice",
+      "great",
+      "badiya",
+      "bohot achha",
+      "mast"
+    ],
+    "responses": [
+      "Shukriya {name} bhai!",
+      "Thanks {name}!",
+      "Khushi hui sunkar!"
+    ],
+    "context_responses": {}
+  },
+  {
+    "tag": "bot_identity",
+    "patterns": [
+      "tum kon ho",
+      "tum kaun ho",
+      "who are you",
+      "tumhe kisne banaya",
+      "who created you",
+      "about yourself",
+      "tera naam kya hai",
+      "tera naam kya",
+      "tera naam"
+    ],
+    "responses": [
+      "Main INFINITY-AI hoon. Mujhe Pankaj Singh ne Python me scratch se banaya hai. Agar aapko developer ke baare me aur jaanna hai toh unke GitHub pe jaa sakte hain aur unke Discord pe pooch sakte hain sawal ya koi suggestion. Discord ki link unke GitHub profile me hai.\n\nDeveloper GitHub Profile: infinityminds-dev"
+    ],
+    "context_responses": {}
+  },
+  {
+    "tag": "daily_activity_suggestions",
+    "patterns": [
+      "chal bata aaj kya karna hai",
+      "aaj kya kare",
+      "kya kare aaj",
+      "aaj kya karna chahiye",
+      "bor ho raha hu kya karu",
+      "kya karu aaj",
+      "bor ho raha hu",
+      "kya plan hai ajj ka",
+      "kya plan hai aaj ka"
+    ],
+    "responses": [
+      "Arre bhai mood ke hisab se plan banao! Agar energy hai toh thodi coding kar lo ya koi naya project try kar lo. Thoda chill karna hai toh mast music suno ya koi game khel lo. Aur agar bilkul bhi man nahi kar raha toh aaram se rest kar lo, dosto se baat kar lo ya thodi der walk pe ho aao. Aap batao, kis cheez ka mood hai?"
     ],
     "context_responses": {
-      "ask_status": [
-        "Accha, matlab chill chal raha hai!",
-        "Sahi hai bhai, thoda aaram bhi zaroori hai."
-      ],
-      "ask_problem": [
-        "Chalo accha hai koi dikkat nahi hai!",
-        "Badhiya, tension mat lo fir."
-      ],
-      "default": [
-        "Accha thik hai {name}!",
-        "Hmm, aage batao fir!"
-      ]
+      "music": "Mast playlist lagao aur headphone pehen ke chill karo bhai!",
+      "game": "Kaunsa game khelne ka plan hai? PC game ya mobile game?",
+      "mobile": "Mast BGMI, Free Fire ya Call of Duty lagao aur dosto ke saath machao!",
+      "pc": "Sahi hai! GTA, Valorant ya Counter-Strike me se kya chalayein?",
+      "coding": "Sahi hai! Aaj kaunsa naya feature code karne wale ho?"
     }
   },
   {
-    "tag": "custom_1056",
+    "tag": "music_intent",
     "patterns": [
-      "kya kar raha hai"
+      "music",
+      "music sun lo",
+      "gaana sun leta hu",
+      "chal music sun leta hu",
+      "gaane sunne hain"
     ],
     "responses": [
-      "kuch nahi tum se baat aur batao"
-    ]
+      "Haan bhai! Music sun ke mind ekdam relax ho jata hai. Apne favorite songs lagao aur chill karo!"
+    ],
+    "context_responses": {}
   },
   {
-    "tag": "custom_3052",
+    "tag": "game_intent",
     "patterns": [
-      "clear"
+      "game khelna hai",
+      "mobile game",
+      "pc game",
+      "game khel lu",
+      "chal game khelte hain"
     ],
     "responses": [
-      "isko clear kar na hai kya bol raha hai bhai"
-    ]
+      "Sahi hai bhai! Konsa game khelne ka socha hai?"
+    ],
+    "context_responses": {}
+  },
+    {
+    "tag": "tech_coding_fallback",
+    "patterns": [
+      "python",
+      "coding",
+      "code",
+      "programming",
+      "programming language",
+      "javascript",
+      "html",
+      "css",
+      "java",
+      "c++",
+      "bug",
+      "error",
+      "loop",
+      "function",
+      "array",
+      "database",
+      "sql",
+      "tech",
+      "github",
+      "tujha coding ka bare ma kuch pata hai",
+      "tumhe coding ke bare me pata hai",
+      "coding aati hai kya",
+      "coding ke bare me pata hai",
+      "loop kya hai"
+    ],
+    "responses": [
+      "Mujhe abhi coding aur tech ke baare me zyada jankari nahi hai. Iske liye aap ChatGPT ya Gemini jaise Large Language Models (LLM) se pooch sakte hain. Developer ne abhi mujhe itna develop nahi kiya hai, lekin in future main iska jawab zaroor de paunga!"
+    ],
+    "context_responses": {}
   },
   {
-    "tag": "custom_9841",
+    "tag": "low_energy_mood",
     "patterns": [
-      "tgeek hu"
+      "maan nahi kar raha hai kuch kar na ka",
+      "man nahi kar raha hai kuch karne ka",
+      "kuch karne ka man nahi hai",
+      "kuch karne ka maan nahi hai",
+      "aaj kuch nahi karna",
+      "man nahi hai aaj"
     ],
     "responses": [
-      "ok toh kya Plan hai aaj ka"
-    ]
+      "Toh mat kar bhai! Aaj rest kar lo, fresh mind ke saath kal machayenge."
+    ],
+    "context_responses": {}
   },
   {
-    "tag": "custom_8769",
+    "tag": "bot_status_query",
     "patterns": [
-      "good"
+      "tu bata",
+      "tu bata bhai",
+      "apna batao"
     ],
     "responses": [
-      "thankyou bhai"
-    ]
+      "Main bhi ekdam mast hu bhai! Aap batao koi kaam ho toh."
+    ],
+    "context_responses": {}
+  },
+  {
+    "tag": "custom_2064",
+    "patterns": [
+      "ooo",
+      "oo"
+    ],
+    "responses": [
+      "Yes bhai!"
+    ],
+    "context_responses": {}
+  },
+   {
+    "tag": "bot_capabilities",
+    "patterns": [
+      "tu kya kar sakta hai",
+      "tum kya kar sakte ho",
+      "kya kya kar sakte ho",
+      "tumhare features kya hain",
+      "what can you do"
+    ],
+    "responses": [
+      "Main aapka personal AI assistant hoon! Main ye sab kar sakta hoon:\n1. Mood ke hisab se activity suggest kar sakta hoon.\n2. Math calculations solve kar sakta hoon.\n3. Session history aur purane sawal yaad rakh sakta hoon.\n4. Naye jawab seekh kar memory save kar sakta hoon.\n5. Context samajh kar multi-turn conversation kar sakta hoon!\n\nAap batao, main aapki kya help karoon?"
+    ],
+    "context_responses": {}
+  },
+  {
+    "tag": "bot_current_activity",
+    "patterns": [
+      "tu kya kar raha hai",
+      "tum kya kar rahe ho",
+      "kya kar raha hai",
+      "kya kar rahe ho"
+    ],
+    "responses": [
+      "Bas {name} bhai, aapke messages ka wait kar raha hoon aur apni memory update kar raha hoon! Aap batao, kya chal raha hai?"
+    ],
+    "context_responses": {}
   }
+ 
 ]
+  
