@@ -1,10 +1,11 @@
+from datetime import datetime
 import glob
 import json
 
 
 def smart_merge_memories():
     print("================================================================")
-    print("      SMART AI MEMORY MERGE ENGINE (Pankaj Master Priority)")
+    print("   SMART AI MEMORY MERGE ENGINE V3.6 (Emoji & Master Safe)")
     print("================================================================\n")
 
     my_file = input(
@@ -32,10 +33,8 @@ def smart_merge_memories():
         if not isinstance(item, dict):
             continue
         tag = item.get("tag", "general")
-        patterns = set(p.strip() for p in item.get("patterns", []) if p.strip())
-        responses = list(
-            item.get("responses", [])
-        )  # Direct list to avoid copy issues
+        patterns = set(str(p).strip() for p in item.get("patterns", []) if str(p).strip())
+        responses = list(item.get("responses", []))
         ctx_resp = item.get("context_responses", {})
 
         if tag not in tag_map:
@@ -65,7 +64,7 @@ def smart_merge_memories():
     print(f"Mili hui dosto ki files: {friend_files}\n")
     added_patterns_count = 0
 
-    # 3. Smart Merging with V3.4 Compatibility
+    # 3. Smart Merging with Emoji & UTF-8 Compatibility
     for file_path in friend_files:
         try:
             with open(file_path, "r", encoding="utf-8") as f:
@@ -78,7 +77,7 @@ def smart_merge_memories():
                         continue
                     f_tag = item.get("tag", f"merged_{file_path}")
                     f_patterns = [
-                        p.strip() for p in item.get("patterns", []) if p.strip()
+                        str(p).strip() for p in item.get("patterns", []) if str(p).strip()
                     ]
                     f_responses = item.get("responses", [])
                     f_ctx = item.get("context_responses", {})
@@ -118,14 +117,14 @@ def smart_merge_memories():
                 }
             )
 
-    # 5. Save Back to Master File
+    # 5. Save Back to Master File (ensure_ascii=False zaroori hai emojis ke liye!)
     with open(my_file, "w", encoding="utf-8") as f:
         json.dump(final_master_list, f, indent=2, ensure_ascii=False)
 
     print(
         f"\nSUCCESS! Total {added_patterns_count} naye patterns dosto ki files se '{my_file}' me safely merge ho gaye!"
     )
-    print("V3.4 Neural Engine structure fully intact aur safe hai. 😎")
+    print("V3.6 Neural Engine structure fully intact aur emoji-safe hai. 😎🔥")
 
 
 if __name__ == "__main__":
