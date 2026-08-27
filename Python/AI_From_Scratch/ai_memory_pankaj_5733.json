@@ -80,7 +80,7 @@
     ],
     "context_responses": {}
   },
-   {
+  {
     "tag": "agreement_disagreement",
     "patterns": [
       "haan",
@@ -96,7 +96,7 @@
       "Sahi hai! Phir kabhi fursat me baat karte hain."
     ],
     "context_responses": {}
-  }, 
+  },
   {
     "tag": "compliment",
     "patterns": [
@@ -105,7 +105,8 @@
       "great",
       "badiya",
       "bohot achha",
-      "mast"
+      "mast",
+      "oo bahi good"
     ],
     "responses": [
       "Shukriya {name} bhai!",
@@ -184,7 +185,7 @@
     ],
     "context_responses": {}
   },
-    {
+  {
     "tag": "tech_coding_fallback",
     "patterns": [
       "python",
@@ -255,7 +256,7 @@
     ],
     "context_responses": {}
   },
-   {
+  {
     "tag": "bot_capabilities",
     "patterns": [
       "tu kya kar sakta hai",
@@ -281,7 +282,51 @@
       "Bas {name} bhai, aapke messages ka wait kar raha hoon aur apni memory update kar raha hoon! Aap batao, kya chal raha hai?"
     ],
     "context_responses": {}
+  },
+  {
+    "tag": "custom_5567",
+    "patterns": [
+      "i am back"
+    ],
+    "responses": [
+      "oo bhai agaya chal bata koi kam hai"
+    ],
+    "context_responses": {}
+  },
+  {
+    "tag": "custom_6423",
+    "patterns": [
+      "good Morning bhai",
+      "good morning",
+      "good morning bro "
+    ],
+    "responses": [
+      "good Morning bhai Uth gaya so ke ab bata kya karna hai "
+    ],
+    "context_responses": {}
+  },
+  {
+    "tag": "custom_1812",
+    "patterns": [
+      "Good night bhai",
+      "good night",
+      "good night bro"
+    ],
+    "responses": [
+      "good Night Bhai sweet dreams"
+    ],
+    "context_responses": {}
+  },
+  {
+    "tag": "custom_5087",
+    "patterns": [
+      "Good evening",
+      "good evening bhai",
+      "good evening bro"
+    ],
+    "responses": [
+      "Good Evening bhai kya plan hai aaj ka"
+    ],
+    "context_responses": {}
   }
- 
-]
-  
+    ]
