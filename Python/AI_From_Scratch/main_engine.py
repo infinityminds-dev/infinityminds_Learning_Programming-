@@ -1,3 +1,4 @@
+from datetime import datetime
 import difflib
 import glob
 import json
@@ -9,7 +10,7 @@ from collections import Counter
 
 
 class SmartIntentClassifier:
-    """V3.1 Enhanced Neural-like Intent Classifier Engine with Sub-phrase & Bi-gram Weights"""
+    """V3.6 Enhanced Intent Classifier Engine with Bigram Weights"""
 
     def __init__(self):
         self.intent_words = {}
@@ -28,7 +29,13 @@ class SmartIntentClassifier:
         self.intent_words = {}
         self.intent_bigrams = {}
 
+        if not isinstance(memory_db, list):
+            return
+
         for item in memory_db:
+            if not isinstance(item, dict):
+                continue
+
             tag = item.get("tag")
             patterns = item.get("patterns", [])
             words_list = []
@@ -90,12 +97,30 @@ class MainAIEngine:
         self.last_unknown_query = None
 
         self.current_context = None
+        self.last_responses = {}
 
         self.memory_file = self.handle_smart_memory_file()
         self.memory_db = []
 
         self.classifier = SmartIntentClassifier()
         self.load_memory()
+
+    def get_non_repeating_choice(self, tag, responses):
+        if not responses:
+            return ""
+
+        if len(responses) == 1:
+            return responses[0]
+
+        last_resp = self.last_responses.get(tag)
+
+        available = [r for r in responses if r != last_resp]
+        if not available:
+            available = responses
+
+        chosen = random.choice(available)
+        self.last_responses[tag] = chosen
+        return chosen
 
     def handle_smart_memory_file(self):
         if self.user_name == "pankaj":
@@ -157,7 +182,6 @@ class MainAIEngine:
 
     def load_memory(self):
         default_data = [
-            
   {
     "tag": "greeting",
     "patterns": [
@@ -185,8 +209,8 @@ class MainAIEngine:
       "sab sahi hai"
     ],
     "responses": [
-      "Sahi hai bhai, aise hi mast raho!",
-      "Accha laga sunkar {name}!"
+      "Sahi hai bhai, aise hi mast raho! 😎",
+      "Accha laga sunkar {name}! 🔥"
     ],
     "context_responses": {}
   },
@@ -205,7 +229,7 @@ class MainAIEngine:
     "responses": [
       "Sahi hai bhai!",
       "Haan {name}, aur batao?",
-      "Got it!"
+      "Got it! 👍"
     ],
     "context_responses": {}
   },
@@ -218,9 +242,9 @@ class MainAIEngine:
       "dhanyawad"
     ],
     "responses": [
-      "Arre koi baat nahi {name} bhai!",
+      "Arre koi baat nahi {name} bhai! 🙌",
       "Welcome bhai!",
-      "Always happy to help!"
+      "Always happy to help! ✨"
     ],
     "context_responses": {}
   },
@@ -234,8 +258,8 @@ class MainAIEngine:
       "alvida"
     ],
     "responses": [
-      "Bye {name}! Phir milte hain.",
-      "Chalo sahi hai, apna khyal rakhna!"
+      "Bye {name}! Phir milte hain. 👋",
+      "Chalo sahi hai, apna khyal rakhna! Take care."
     ],
     "context_responses": {}
   },
@@ -251,7 +275,7 @@ class MainAIEngine:
     ],
     "responses": [
       "Theek hai bhai, samajh gaya.",
-      "Okay {name} bhai! Jab bhi zarurat ho, aawaz dena.",
+      "Okay {name} bhai! Jab bhi zarurat ho, aawaz dena. 🤝",
       "Sahi hai! Phir kabhi fursat me baat karte hain."
     ],
     "context_responses": {}
@@ -268,16 +292,16 @@ class MainAIEngine:
       "oo bahi good"
     ],
     "responses": [
-      "Shukriya {name} bhai!",
-      "Thanks {name}!",
-      "Khushi hui sunkar!"
+      "Shukriya {name} bhai! Dil jeet liya! ❤️",
+      "Thanks {name}! 🚀",
+      "Khushi hui sunkar! 😊"
     ],
     "context_responses": {}
   },
   {
     "tag": "bot_identity",
     "patterns": [
-      "tum kon ho",
+      "tum kon hon",
       "tum kaun ho",
       "who are you",
       "tumhe kisne banaya",
@@ -288,7 +312,7 @@ class MainAIEngine:
       "tera naam"
     ],
     "responses": [
-      "Main INFINITY-AI hoon. Mujhe Pankaj Singh ne Python me scratch se banaya hai. Agar aapko developer ke baare me aur jaanna hai toh unke GitHub pe jaa sakte hain aur unke Discord pe pooch sakte hain sawal ya koi suggestion. Discord ki link unke GitHub profile me hai.\n\nDeveloper GitHub Profile: infinityminds-dev"
+      "Main INFINITY-AI hoon! 🤖 Mujhe Pankaj Singh ne Python me scratch se banaya hai. Agar aapko developer ke baare me aur jaanna hai toh unke GitHub pe jaa sakte hain aur unke Discord pe pooch sakte hain sawal ya koi suggestion. Discord ki link unke GitHub profile me hai.\n\nDeveloper GitHub Profile: infinityminds-dev"
     ],
     "context_responses": {}
   },
@@ -306,14 +330,14 @@ class MainAIEngine:
       "kya plan hai aaj ka"
     ],
     "responses": [
-      "Arre bhai mood ke hisab se plan banao! Agar energy hai toh thodi coding kar lo ya koi naya project try kar lo. Thoda chill karna hai toh mast music suno ya koi game khel lo. Aur agar bilkul bhi man nahi kar raha toh aaram se rest kar lo, dosto se baat kar lo ya thodi der walk pe ho aao. Aap batao, kis cheez ka mood hai?"
+      "Arre bhai mood ke hisab se plan banao! 🎯 Agar energy hai toh thodi coding kar lo ya koi naya project try kar lo 💻. Thoda chill karna hai toh mast music suno 🎧 ya koi game khel lo 🎮. Aur agar bilkul bhi man nahi kar raha toh aaram se rest kar lo 🛌, dosto se baat kar lo 🗣️ ya thodi der walk pe ho aao 🚶‍♂️. Aap batao, kis cheez ka mood hai?"
     ],
     "context_responses": {
-      "music": "Mast playlist lagao aur headphone pehen ke chill karo bhai!",
-      "game": "Kaunsa game khelne ka plan hai? PC game ya mobile game?",
-      "mobile": "Mast BGMI, Free Fire ya Call of Duty lagao aur dosto ke saath machao!",
-      "pc": "Sahi hai! GTA, Valorant ya Counter-Strike me se kya chalayein?",
-      "coding": "Sahi hai! Aaj kaunsa naya feature code karne wale ho?"
+      "music": "Mast playlist lagao aur headphone pehen ke chill karo bhai! 🎧🎶",
+      "game": "Kaunsa game khelne ka plan hai? PC game ya mobile game? 🎮🔥",
+      "mobile": "Mast BGMI, Free Fire ya Call of Duty lagao aur dosto ke saath machao! 📱💥",
+      "pc": "Sahi hai! GTA, Valorant ya Counter-Strike me se kya chalayein? 🖥️🎯",
+      "coding": "Sahi hai! Aaj kaunsa naya feature code karne wale ho? 💻⚡"
     }
   },
   {
@@ -326,7 +350,7 @@ class MainAIEngine:
       "gaane sunne hain"
     ],
     "responses": [
-      "Haan bhai! Music sun ke mind ekdam relax ho jata hai. Apne favorite songs lagao aur chill karo!"
+      "Haan bhai! Music sun ke mind ekdam relax ho jata hai 🎶. Apne favorite songs lagao aur chill karo!"
     ],
     "context_responses": {}
   },
@@ -340,7 +364,7 @@ class MainAIEngine:
       "chal game khelte hain"
     ],
     "responses": [
-      "Sahi hai bhai! Konsa game khelne ka socha hai?"
+      "Sahi hai bhai! 🎮 Konsa game khelne ka socha hai?"
     ],
     "context_responses": {}
   },
@@ -373,7 +397,7 @@ class MainAIEngine:
       "loop kya hai"
     ],
     "responses": [
-      "Mujhe abhi coding aur tech ke baare me zyada jankari nahi hai. Iske liye aap ChatGPT ya Gemini jaise Large Language Models (LLM) se pooch sakte hain. Developer ne abhi mujhe itna develop nahi kiya hai, lekin in future main iska jawab zaroor de paunga!"
+      "Mujhe abhi coding aur tech ke baare me zyada jankari nahi hai 😅. Iske liye aap ChatGPT ya Gemini jaise Large Language Models (LLM) se pooch sakte hain 🤖. Developer ne abhi mujhe itna develop nahi kiya hai, lekin in future main iska jawab zaroor de paunga!"
     ],
     "context_responses": {}
   },
@@ -388,7 +412,7 @@ class MainAIEngine:
       "man nahi hai aaj"
     ],
     "responses": [
-      "Toh mat kar bhai! Aaj rest kar lo, fresh mind ke saath kal machayenge."
+      "Toh mat kar bhai! 🛌 Aaj rest kar lo, fresh mind ke saath kal machayenge 🔥"
     ],
     "context_responses": {}
   },
@@ -400,7 +424,7 @@ class MainAIEngine:
       "apna batao"
     ],
     "responses": [
-      "Main bhi ekdam mast hu bhai! Aap batao koi kaam ho toh."
+      "Main bhi ekdam mast hu bhai! 😎 Aap batao koi kaam ho toh"
     ],
     "context_responses": {}
   },
@@ -411,7 +435,7 @@ class MainAIEngine:
       "oo"
     ],
     "responses": [
-      "Yes bhai!"
+      "Yes bhai! 💯"
     ],
     "context_responses": {}
   },
@@ -425,7 +449,7 @@ class MainAIEngine:
       "what can you do"
     ],
     "responses": [
-      "Main aapka personal AI assistant hoon! Main ye sab kar sakta hoon:\n1. Mood ke hisab se activity suggest kar sakta hoon.\n2. Math calculations solve kar sakta hoon.\n3. Session history aur purane sawal yaad rakh sakta hoon.\n4. Naye jawab seekh kar memory save kar sakta hoon.\n5. Context samajh kar multi-turn conversation kar sakta hoon!\n\nAap batao, main aapki kya help karoon?"
+      "Main aapka personal AI assistant hoon! 🚀 Main ye sab kar sakta hoon:\n1. Mood ke hisab se activity suggest kar sakta hoon 🎯\n2. Math calculations solve kar sakta hoon 🧮\n3. Session history aur purane sawal yaad rakh sakta hoon 🧠\n4. Naye jawab seekh kar memory save kar sakta hoon 💾\n5. Context samajh kar multi-turn conversation kar sakta hoon! 🔄\n\nAap batao, main aapki kya help karoon?"
     ],
     "context_responses": {}
   },
@@ -438,7 +462,7 @@ class MainAIEngine:
       "kya kar rahe ho"
     ],
     "responses": [
-      "Bas {name} bhai, aapke messages ka wait kar raha hoon aur apni memory update kar raha hoon! Aap batao, kya chal raha hai?"
+      "Bas {name} bhai, aapke messages ka wait kar raha hoon aur apni memory update kar raha hoon! ⚡ Aap batao, kya chal raha hai?"
     ],
     "context_responses": {}
   },
@@ -448,7 +472,7 @@ class MainAIEngine:
       "i am back"
     ],
     "responses": [
-      "oo bhai agaya chal bata koi kam hai"
+      "Oo bhai aa gaya! 🔥 Chal bata koi kaam hai?"
     ],
     "context_responses": {}
   },
@@ -457,10 +481,10 @@ class MainAIEngine:
     "patterns": [
       "good Morning bhai",
       "good morning",
-      "good morning bro "
+      "good morning bro"
     ],
     "responses": [
-      "good Morning bhai Uth gaya so ke ab bata kya karna hai "
+      "Good Morning bhai! 🌅 Uth gaya so ke, ab bata kya karna hai?"
     ],
     "context_responses": {}
   },
@@ -472,7 +496,7 @@ class MainAIEngine:
       "good night bro"
     ],
     "responses": [
-      "good Night Bhai sweet dreams"
+      "Good Night Bhai! 🌙 Sweet dreams!"
     ],
     "context_responses": {}
   },
@@ -484,17 +508,77 @@ class MainAIEngine:
       "good evening bro"
     ],
     "responses": [
-      "Good Evening bhai kya plan hai aaj ka"
+      "Good Evening bhai! 🌆 Kya plan hai aaj ka?"
+    ],
+    "context_responses": {}
+  },
+  {
+    "tag": "custom_afternoon",
+    "patterns": [
+      "good afternoon",
+      "good afternoon bhai",
+      "afternoon bro"
+    ],
+    "responses": [
+      "Good Afternoon {name} bhai! ☀️ Khana peena ho gaya ya nahi?"
+    ],
+    "context_responses": {}
+  },
+  {
+    "tag": "custom_jokes",
+    "patterns": [
+      "joke sunao",
+      "chutkula sunao",
+      "koi joke batao",
+      "hassa do bhai"
+    ],
+    "responses": [
+      "Teacher: 1 se 10 tak ginti sunao!\nStudent: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10!\nTeacher: Shabash! Aage?\nStudent: J, Q, K! 🃏😂",
+      "Ek aadmi doctor ke paas gaya: Doctor sahab jab mai chai pita hu to meri aakh me dard hota hai!\nDoctor: Pehle cup me se chammach nikal liya karo! ☕😜",
+      "Pappu: Yaar mera mobile pani me gir gaya aur kharab ho gaya.\nFriend: Toh dukandar ko dikhaya?\nPappu: Haan, usne bola isme rice me daal ke rakho.\nFriend: Phir kya hua?\nPappu: Kucch nahi, mobile chawal ke sath pak gaya! 📱🍚",
+      "Teacher: Tumne kal homework kyon nahi kiya?\nStudent: Sir, bijli nahi thi.\nTeacher: Toh mombatti jala lete!\nStudent: Sir, maachis nahi thi.\nTeacher: Maachis kyon nahi thi?\nStudent: Pooja ke ghar me rakhi thi.\nTeacher: Toh wahan se le aate!\nStudent: Sir, nahaaya hua nahi tha! 🕯️🤣",
+      "Customer: Bhai, is phone me net fast chalta hai kya?\nDukandar: Pata nahi bhai, kal ek banda le gaya tha, aaj tak wapas hi nahi aaya... speed me kahin aage nikal gaya hoga! 🚀📱",
+      "Papa: Beta tumhare result ka kya hua?\nBeta: Papa, doctor ka beta doctor bana, engineer ka beta engineer!\nPapa: Aur tum?\nBeta: Main toh mazdoor ka beta hoon na papa, toh fail ho gaya! 👷‍♂️📖",
+      "Husband: Aaj khane me kya banaya hai?\nWife: Jo tumne kal bola tha na wahi!\nHusband: Par kal toh maine bola tha ki zahar de do!\nWife: Toh bas wahi bana diya hai, chup chap kha lo! 🍜💀🤣",
+      "Santa: Yaar, mera dimaag bohot tez chalta hai!\nBanta: Kaise?\nSanta: Kal train chootne me 2 min bache the, main 1 min pehle hi pahunch gaya! 🏃‍♂️🚂",
+      "Boy: Tum itni sundar kaise ho?\nGirl: God ki kripa hai!\nBoy: Lagta hai God ne tum par poori kripa kar di, baaki sab par aalsi ho gaye! 🙄✨",
+      "Doctor: Aapko kaunsa rog hai?\nPatient: Doctor sahab, jab bhi kaam karne lagta hoon, neend aane lagti hai!\nDoctor: Ye rog nahi, isse alsi-pan kehte hain! 🛌💤"
+    ],
+    "context_responses": {}
+  },
+  {
+    "tag": "custom_7212",
+    "patterns": [
+      "oo new respones",
+      "hahahahahhahaha",
+      "ya badiya tha",
+      "good joke"
+    ],
+    "responses": [
+      "Thank you bhai apki training ki vajah se 🥰🔥 "
+    ],
+    "context_responses": {}
+  },
+  {
+    "tag": "custom_3253",
+    "patterns": [
+      "nachooook"
+    ],
+    "responses": [
+      "lekin kyo nachooo bhai kya baat hai"
     ],
     "context_responses": {}
   }
 ]
-  
+
 
         if os.path.exists(self.memory_file):
             try:
                 with open(self.memory_file, "r", encoding="utf-8") as f:
-                    self.memory_db = json.load(f)
+                    data = json.load(f)
+                    self.memory_db = (
+                        data if isinstance(data, list) else default_data
+                    )
             except Exception:
                 self.memory_db = default_data
         else:
@@ -503,36 +587,42 @@ class MainAIEngine:
 
         self.classifier.train(self.memory_db)
 
+    # ------------------ EMOJI FIX HERE ------------------
     def clean_text_for_json(self, text):
         if not isinstance(text, str):
             return text
-        return text.encode("ascii", "ignore").decode("ascii").strip()
+        return text.strip()  # Ascii strip hata diya taaki Emojis save rahein!
+    # ----------------------------------------------------
 
     def save_memory(self):
         cleaned_db = []
-        for item in self.memory_db:
-            clean_patterns = [
-                self.clean_text_for_json(p)
-                for p in item.get("patterns", [])
-                if self.clean_text_for_json(p)
-            ]
-            clean_responses = [
-                self.clean_text_for_json(r)
-                for r in item.get("responses", [])
-                if self.clean_text_for_json(r)
-            ]
+        if isinstance(self.memory_db, list):
+            for item in self.memory_db:
+                if not isinstance(item, dict):
+                    continue
 
-            if clean_patterns and clean_responses:
-                cleaned_db.append(
-                    {
-                        "tag": item.get("tag", "general"),
-                        "patterns": clean_patterns,
-                        "responses": clean_responses,
-                        "context_responses": item.get(
-                            "context_responses", {}
-                        ),
-                    }
-                )
+                clean_patterns = [
+                    self.clean_text_for_json(p)
+                    for p in item.get("patterns", [])
+                    if self.clean_text_for_json(p)
+                ]
+                clean_responses = [
+                    self.clean_text_for_json(r)
+                    for r in item.get("responses", [])
+                    if self.clean_text_for_json(r)
+                ]
+
+                if clean_patterns and clean_responses:
+                    cleaned_db.append(
+                        {
+                            "tag": item.get("tag", "general"),
+                            "patterns": clean_patterns,
+                            "responses": clean_responses,
+                            "context_responses": item.get(
+                                "context_responses", {}
+                            ),
+                        }
+                    )
 
         with open(self.memory_file, "w", encoding="utf-8") as f:
             json.dump(cleaned_db, f, indent=2, ensure_ascii=False)
@@ -541,9 +631,9 @@ class MainAIEngine:
 
     def generate_proactive_greeting(self):
         greetings = [
-            f"Hey {self.user_name.capitalize()}! Main ready hoon, aaj kya chal raha hai?",
-            f"Oi {self.user_name.capitalize()}! Welcome back. Batao aaj kya plan hai?",
-            f"Yo {self.user_name.capitalize()}! INFINITY-AI online hai, kaise ho aaj?",
+            f"Hey {self.user_name.capitalize()}! Main ready hoon, aaj kya chal raha hai? 😎",
+            f"Oi {self.user_name.capitalize()}! Welcome back. Batao aaj kya plan hai? 🚀",
+            f"Yo {self.user_name.capitalize()}! INFINITY-AI online hai, kaise ho aaj? 🔥",
         ]
         return random.choice(greetings)
 
@@ -556,14 +646,13 @@ class MainAIEngine:
 
         learned = False
         for item in self.memory_db:
-            if "patterns" in item and query_clean in [
-                p.lower() for p in item["patterns"]
-            ]:
-                if "responses" in item:
-                    if response_clean not in item["responses"]:
-                        item["responses"].append(response_clean)
-                    learned = True
-                    break
+            if isinstance(item, dict) and "patterns" in item:
+                if query_clean in [p.lower() for p in item["patterns"]]:
+                    if "responses" in item:
+                        if response_clean not in item["responses"]:
+                            item["responses"].append(response_clean)
+                        learned = True
+                        break
 
         if not learned:
             self.memory_db.append(
@@ -576,6 +665,82 @@ class MainAIEngine:
             )
 
         self.save_memory()
+
+    def get_current_time_slot(self):
+        hour = datetime.now().hour
+        if 5 <= hour < 12:
+            return "morning"
+        elif 12 <= hour < 17:
+            return "afternoon"
+        elif 17 <= hour < 22:
+            return "evening"
+        else:
+            return "night"
+
+    def check_time_greeting_correction(self, text_lower):
+        current_slot = self.get_current_time_slot()
+
+        greetings_map = {
+            "morning": ["good morning", "gm", "morning"],
+            "afternoon": ["good afternoon", "afternoon"],
+            "evening": ["good evening", "ge", "evening"],
+            "night": ["good night", "gn", "night"],
+        }
+
+        hindi_slot_names = {
+            "morning": "Morning/Subah",
+            "afternoon": "Afternoon/Dopahar",
+            "evening": "Evening/Shaam",
+            "night": "Night/Raat",
+        }
+
+        detected_slot = None
+        for slot, keywords in greetings_map.items():
+            if any(k in text_lower for k in keywords):
+                detected_slot = slot
+                break
+
+        if detected_slot and detected_slot != current_slot:
+            actual = hindi_slot_names[current_slot]
+            return f"Arre {self.user_name.capitalize()} bhai, abhi {actual} ho raha hai! Pehle ghadi toh dekh lo 😜"
+
+        return None
+
+    def check_dynamic_advice(self, text_lower):
+        mood_triggers = {
+            "bored": ["bore", "boring", "paka", "kuch nahi kar raha"],
+            "tired": ["thak", "tired", "sleepy", "neend"],
+            "stressed": ["stress", "tension", "pareshan", "headache"],
+        }
+
+        detected_mood = None
+        for mood, keys in mood_triggers.items():
+            if any(k in text_lower for k in keys):
+                detected_mood = mood
+                break
+
+        if detected_mood == "bored":
+            advice_list = [
+                f"{self.user_name.capitalize()} bhai, thodi der fav playlist chala ke dance kar le ya game khel le! 🎧🎮",
+                f"Bore ho rahe ho toh 15-min ki walk le aao ya koi joke suno! 🚶‍♂️🤣",
+            ]
+            return random.choice(advice_list)
+
+        elif detected_mood == "tired":
+            advice_list = [
+                f"{self.user_name.capitalize()} bhai, screen off karo aur 20-min ka power nap le lo! 😴🛌",
+                "Thoda thanda paani piyo aur stretch kar lo, energy wapas aayegi! 🥤✨",
+            ]
+            return random.choice(advice_list)
+
+        elif detected_mood == "stressed":
+            advice_list = [
+                "Bhai bilkul tension mat lo. Lambi saans lo aur 10 min coding se break le lo! 🧘‍♂️✨",
+                "Stress lene se kuch nahi hoga, thoda relaxed music suno aur chai/coffee piyo! ☕🎧",
+            ]
+            return random.choice(advice_list)
+
+        return None
 
     def solve_math(self, text):
         clean_text = (
@@ -644,6 +809,8 @@ class MainAIEngine:
         highest_ratio = 0.0
 
         for item in self.memory_db:
+            if not isinstance(item, dict):
+                continue
             for pattern in item.get("patterns", []):
                 ratio = difflib.SequenceMatcher(
                     None, input_text.lower(), pattern.lower()
@@ -661,7 +828,7 @@ class MainAIEngine:
             return None
 
         for item in self.memory_db:
-            if item.get("tag") == self.current_context:
+            if isinstance(item, dict) and item.get("tag") == self.current_context:
                 ctx_responses = item.get("context_responses", {})
                 for key, resp in ctx_responses.items():
                     if key in text_lower:
@@ -674,6 +841,16 @@ class MainAIEngine:
         if not sub_text:
             return None
 
+        text_lower = sub_text.lower()
+
+        time_corrected = self.check_time_greeting_correction(text_lower)
+        if time_corrected:
+            return time_corrected
+
+        advice = self.check_dynamic_advice(text_lower)
+        if advice:
+            return advice
+
         math_ans = self.solve_math(sub_text)
         if math_ans:
             return math_ans
@@ -682,56 +859,58 @@ class MainAIEngine:
         if hist_ans:
             return hist_ans
 
-        text_lower = sub_text.lower()
-
         ctx_reply = self.check_context_reply(text_lower)
         if ctx_reply:
             return ctx_reply
 
         for item in self.memory_db:
-            if "patterns" in item and text_lower in [
-                p.lower() for p in item["patterns"]
-            ]:
-                if "responses" in item and item["responses"]:
-                    self.current_context = item.get("tag")
-                    return random.choice(item["responses"]).replace(
-                        "{name}", self.user_name
-                    )
+            if isinstance(item, dict) and "patterns" in item:
+                if text_lower in [p.lower() for p in item["patterns"]]:
+                    if "responses" in item and item["responses"]:
+                        self.current_context = item.get("tag")
+                        chosen = self.get_non_repeating_choice(item.get("tag"), item["responses"])
+                        return chosen.replace("{name}", self.user_name)
 
         predicted_tag, score = self.classifier.predict_intent(
             text_lower, threshold=0.20
         )
         if predicted_tag:
             for item in self.memory_db:
-                if item.get("tag") == predicted_tag and item.get("responses"):
+                if (
+                    isinstance(item, dict)
+                    and item.get("tag") == predicted_tag
+                    and item.get("responses")
+                ):
                     self.current_context = predicted_tag
-                    return random.choice(item["responses"]).replace(
-                        "{name}", self.user_name
-                    )
+                    chosen = self.get_non_repeating_choice(predicted_tag, item["responses"])
+                    return chosen.replace("{name}", self.user_name)
 
         fuzzy_item, similarity = self.find_fuzzy_match(text_lower, cutoff=0.55)
-        if fuzzy_item and "responses" in fuzzy_item:
-            self.current_context = fuzzy_item.get("tag")
-            return random.choice(fuzzy_item["responses"]).replace(
-                "{name}", self.user_name
-            )
+        if (
+            fuzzy_item
+            and isinstance(fuzzy_item, dict)
+            and "responses" in fuzzy_item
+        ):
+            tag = fuzzy_item.get("tag")
+            self.current_context = tag
+            chosen = self.get_non_repeating_choice(tag, fuzzy_item["responses"])
+            return chosen.replace("{name}", self.user_name)
 
         return None
 
     def respond(self, user_input):
         raw_text = user_input.strip()
         if not raw_text:
-            return "Kuch bologe tabhi toh jawab doonga!"
+            return "Kuch bologe tabhi toh jawab doonga! 😉"
 
         if self.last_unknown_query is not None:
             prompt_query = self.last_unknown_query
             self.last_unknown_query = None
             self.learn_new_response(prompt_query, raw_text)
-            return f"Got it {self.user_name}! Seekh gaya. Ab se '{prompt_query}' par yahi jawab doonga!"
+            return f"Got it {self.user_name}! Seekh gaya. Ab se '{prompt_query}' par yahi jawab doonga! 😎👌"
 
         self.session_history.append({"role": "user", "content": raw_text})
 
-        # Upgraded Smart Multi-query Splitter (Math, Comma, Dot, Question Mark & Keywords)
         math_pattern = r"(\d+[\+\-\*\/]+\d+[\+\-\*\/\d]*)"
         prepared_text = re.sub(math_pattern, r", \1 ,", raw_text)
         parts = re.split(r",|\.|\?|\s+aur\s+|\s+or\s+", prepared_text)
@@ -761,10 +940,10 @@ class MainAIEngine:
 
         if unknown_part:
             self.last_unknown_query = unknown_part
-            return f"Mujhe iska matlab nahi pata '{unknown_part}' ({self.user_name}). Jab main ye suno, toh kya jawab doon?"
+            return f"Mujhe iska matlab nahi pata '{unknown_part}' ({self.user_name}). Jab main ye suno, toh kya jawab doon? 🤔"
 
         self.last_unknown_query = raw_text
-        return f"Mujhe iska matlab nahi pata {self.user_name}. Jab main '{raw_text}' suno, toh kya jawab doon?"
+        return f"Mujhe iska matlab nahi pata {self.user_name}. Jab main '{raw_text}' suno, toh kya jawab doon? 🤔"
 
 
 if __name__ == "__main__":
@@ -772,7 +951,7 @@ if __name__ == "__main__":
     ai = MainAIEngine(user_name=user_name)
 
     print("\n========================================================")
-    print(f"  FINAL ENGINE V3.3 SMART ACTIVE | File: {ai.memory_file}")
+    print(f"  FINAL ENGINE V3.6 SMART ACTIVE | File: {ai.memory_file}")
     print("========================================================\n")
 
     print(f"AI: {ai.generate_proactive_greeting()}\n")
