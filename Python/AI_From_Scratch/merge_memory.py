@@ -8,7 +8,7 @@ def smart_merge_memories():
     print("================================================================\n")
 
     my_file = input(
-        "Apni main file ka exact naam daalo (e.g. ai_memory_pankaj_5733.json): "
+        "Apni main file ka exact naam daalo (e.g. ai_memory_pankaj_master.json): "
     ).strip()
 
     if not my_file:
@@ -19,18 +19,23 @@ def smart_merge_memories():
     try:
         with open(my_file, "r", encoding="utf-8") as f:
             master_data = json.load(f)
+            if not isinstance(master_data, list):
+                master_data = []
     except Exception as e:
         print(f"Error: '{my_file}' kholne me problem aayi. Details: {e}")
         return
 
-    # Tag-wise Master mapping maintain karenge taaki V3.1 Structure kharab na ho
     tag_map = {}
     pattern_to_tag = {}
 
     for item in master_data:
+        if not isinstance(item, dict):
+            continue
         tag = item.get("tag", "general")
-        patterns = set(p.lower().strip() for p in item.get("patterns", []))
-        responses = list(item.get("responses", []))
+        patterns = set(p.strip() for p in item.get("patterns", []) if p.strip())
+        responses = list(
+            item.get("responses", [])
+        )  # Direct list to avoid copy issues
         ctx_resp = item.get("context_responses", {})
 
         if tag not in tag_map:
@@ -47,7 +52,7 @@ def smart_merge_memories():
             tag_map[tag]["context_responses"].update(ctx_resp)
 
         for p in patterns:
-            pattern_to_tag[p] = tag
+            pattern_to_tag[p.lower()] = tag
 
     # 2. Dosto ki files search karo
     all_files = glob.glob("ai_memory_*.json")
@@ -60,14 +65,21 @@ def smart_merge_memories():
     print(f"Mili hui dosto ki files: {friend_files}\n")
     added_patterns_count = 0
 
-    # 3. Smart Merging with V3.1 Compatibility
+    # 3. Smart Merging with V3.4 Compatibility
     for file_path in friend_files:
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 friend_data = json.load(f)
+                if not isinstance(friend_data, list):
+                    continue
+
                 for item in friend_data:
-                    f_tag = item.get("tag", "custom_merged")
-                    f_patterns = [p.lower().strip() for p in item.get("patterns", [])]
+                    if not isinstance(item, dict):
+                        continue
+                    f_tag = item.get("tag", f"merged_{file_path}")
+                    f_patterns = [
+                        p.strip() for p in item.get("patterns", []) if p.strip()
+                    ]
                     f_responses = item.get("responses", [])
                     f_ctx = item.get("context_responses", {})
 
@@ -79,9 +91,9 @@ def smart_merge_memories():
                         }
 
                     for p in f_patterns:
-                        if p not in pattern_to_tag:
+                        if p.lower() not in pattern_to_tag:
                             tag_map[f_tag]["patterns"].add(p)
-                            pattern_to_tag[p] = f_tag
+                            pattern_to_tag[p.lower()] = f_tag
                             added_patterns_count += 1
 
                     for r in f_responses:
@@ -113,7 +125,7 @@ def smart_merge_memories():
     print(
         f"\nSUCCESS! Total {added_patterns_count} naye patterns dosto ki files se '{my_file}' me safely merge ho gaye!"
     )
-    print("V3.1 Neural Engine structure fully intact aur safe hai. 😎")
+    print("V3.4 Neural Engine structure fully intact aur safe hai. 😎")
 
 
 if __name__ == "__main__":
