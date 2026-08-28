@@ -8,103 +8,84 @@ import random
 import re
 from collections import Counter
 
-# --- TENSORFLOW NEURAL NETWORK IMPORTS ---
-try:
-    import numpy as np
-    import tensorflow as tf
-    from tensorflow.keras.layers import Dense, Embedding, GlobalAveragePooling1D
-    from tensorflow.keras.models import Sequential
-    from tensorflow.keras.preprocessing.sequence import pad_sequences
-    from tensorflow.keras.preprocessing.text import Tokenizer
-    TF_AVAILABLE = True
-    print("\n[TensorFlow Active] Real Neural Network Brain Activated! 🚀")
-except ImportError:
-    TF_AVAILABLE = False
-    print("\n[Notice] TensorFlow not found. Running on standard fallback mode.")
-
-
 
 class SmartIntentClassifier:
-    """V4.0 Real Deep Learning TensorFlow Intent Classifier Engine"""
+    """V3.6 Enhanced Intent Classifier Engine with Bigram Weights"""
 
     def __init__(self):
-        self.model = None
-        self.tokenizer = None
-        self.tag_to_idx = {}
-        self.idx_to_tag = {}
-        self.max_len = 20
+        self.intent_words = {}
+        self.intent_bigrams = {}
 
-    def tokenize_text(self, text):
+    def tokenize(self, text):
         words = re.findall(r"\w+", text.lower())
         ignore = {"bhai", "bro", "oo", "ooo", "aa", "aah"}
         filtered = [w for w in words if w not in ignore]
         return filtered if filtered else words
 
-    def train(self, memory_db):
-        if not TF_AVAILABLE or not isinstance(memory_db, list) or not memory_db:
-            return
+    def get_bigrams(self, tokens):
+        return [f"{tokens[i]} {tokens[i+1]}" for i in range(len(tokens) - 1)]
 
-        training_sentences = []
-        training_labels = []
-        tags = []
+    def train(self, memory_db):
+        self.intent_words = {}
+        self.intent_bigrams = {}
+
+        if not isinstance(memory_db, list):
+            return
 
         for item in memory_db:
             if not isinstance(item, dict):
                 continue
+
             tag = item.get("tag")
             patterns = item.get("patterns", [])
-            if tag and tag not in tags:
-                tags.append(tag)
+            words_list = []
+            bigrams_list = []
+
             for p in patterns:
-                training_sentences.append(p)
-                training_labels.append(tag)
+                tokens = self.tokenize(p)
+                words_list.extend(tokens)
+                bigrams_list.extend(self.get_bigrams(tokens))
 
-        if not training_sentences:
-            return
+            if tag not in self.intent_words:
+                self.intent_words[tag] = Counter(words_list)
+                self.intent_bigrams[tag] = Counter(bigrams_list)
+            else:
+                self.intent_words[tag].update(words_list)
+                self.intent_bigrams[tag].update(bigrams_list)
 
-        self.tag_to_idx = {tag: i for i, tag in enumerate(tags)}
-        self.idx_to_tag = {i: tag for tag, i in self.tag_to_idx.items()}
+    def predict_intent(self, text, threshold=0.20):
+        tokens = self.tokenize(text)
+        bigrams = self.get_bigrams(tokens)
 
-        y_train = [self.tag_to_idx[label] for label in training_labels]
-
-        self.tokenizer = Tokenizer(num_words=1000, oov_token="<OOV>")
-        self.tokenizer.fit_on_texts(training_sentences)
-
-        sequences = self.tokenizer.texts_to_sequences(training_sentences)
-        X_train = pad_sequences(sequences, maxlen=self.max_len, padding='post')
-        y_train = np.array(y_train)
-
-        vocab_size = len(self.tokenizer.word_index) + 1
-        num_classes = len(tags)
-
-        # Building Real Neural Network Architecture
-        self.model = Sequential([
-            Embedding(vocab_size, 16, input_length=self.max_len),
-            GlobalAveragePooling1D(),
-            Dense(16, activation='relu'),
-            Dense(num_classes, activation='softmax')
-        ])
-
-        self.model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-        
-        # Training the Deep Learning Model silently
-        self.model.fit(X_train, y_train, epochs=100, verbose=0)
-
-    def predict_intent(self, text, threshold=0.40):
-        if not TF_AVAILABLE or not self.model or not self.tokenizer:
+        if not tokens or not self.intent_words:
             return None, 0.0
 
-        sequence = self.tokenizer.texts_to_sequences([text])
-        padded = pad_sequences(sequence, maxlen=self.max_len, padding='post')
-        
-        prediction = self.model.predict(padded, verbose=0)[0]
-        max_idx = np.argmax(prediction)
-        confidence = float(prediction[max_idx])
+        best_tag = None
+        max_score = 0.0
 
-        if confidence >= threshold:
-            predicted_tag = self.idx_to_tag.get(max_idx)
-            return predicted_tag, confidence
+        for tag, counts in self.intent_words.items():
+            total_words = sum(counts.values())
+            if total_words == 0:
+                continue
 
+            score = 0.0
+            for token in tokens:
+                if token in counts:
+                    score += (counts[token] / total_words) * 1.5
+
+            bigram_counts = self.intent_bigrams.get(tag, Counter())
+            for bg in bigrams:
+                if bg in bigram_counts:
+                    score += 2.0
+
+            score = score / (len(tokens) ** 0.4)
+
+            if score > max_score:
+                max_score = score
+                best_tag = tag
+
+        if max_score >= threshold:
+            return best_tag, max_score
         return None, 0.0
 
 
@@ -356,9 +337,7 @@ class MainAIEngine:
       "game": "Kaunsa game khelne ka plan hai? PC game ya mobile game? 🎮🔥",
       "mobile": "Mast BGMI, Free Fire ya Call of Duty lagao aur dosto ke saath machao! 📱💥",
       "pc": "Sahi hai! GTA, Valorant ya Counter-Strike me se kya chalayein? 🖥️🎯",
-      "coding": "Sahi hai! Aaj kaunsa naya feature code karne wale ho? 💻⚡",
-      "walk": "Sahi hai! Thodi taazi hawa lo aur fresh ho ke aao! 🚶‍♂️✨",
-      "rest": "Badiya hai bhai! Thodi der aaram karo, mind fresh ho jayega. 🛌💤"
+      "coding": "Sahi hai! Aaj kaunsa naya feature code karne wale ho? 💻⚡"
     }
   },
   {
@@ -557,7 +536,7 @@ class MainAIEngine:
       "Teacher: 1 se 10 tak ginti sunao!\nStudent: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10!\nTeacher: Shabash! Aage?\nStudent: J, Q, K! 🃏😂",
       "Ek aadmi doctor ke paas gaya: Doctor sahab jab mai chai pita hu to meri aakh me dard hota hai!\nDoctor: Pehle cup me se chammach nikal liya karo! ☕😜",
       "Pappu: Yaar mera mobile pani me gir gaya aur kharab ho gaya.\nFriend: Toh dukandar ko dikhaya?\nPappu: Haan, usne bola isme rice me daal ke rakho.\nFriend: Phir kya hua?\nPappu: Kucch nahi, mobile chawal ke sath pak gaya! 📱🍚",
-      "Teacher: Tumne kal homework kyon nahi kiya?\nStudent: Sir, bijli nahi thi.\nTeacher: Toh mombatti jala lete!\nStudent: Sir, maachis nahi thi.\nStudent: Maachis kyon nahi thi?\nStudent: Pooja ke ghar me rakhi thi.\nTeacher: Toh wahan se le aate!\nStudent: Sir, nahaaya hua nahi tha! 🕯️🤣",
+      "Teacher: Tumne kal homework kyon nahi kiya?\nStudent: Sir, bijli nahi thi.\nTeacher: Toh mombatti jala lete!\nStudent: Sir, maachis nahi thi.\nTeacher: Maachis kyon nahi thi?\nStudent: Pooja ke ghar me rakhi thi.\nTeacher: Toh wahan se le aate!\nStudent: Sir, nahaaya hua nahi tha! 🕯️🤣",
       "Customer: Bhai, is phone me net fast chalta hai kya?\nDukandar: Pata nahi bhai, kal ek banda le gaya tha, aaj tak wapas hi nahi aaya... speed me kahin aage nikal gaya hoga! 🚀📱",
       "Papa: Beta tumhare result ka kya hua?\nBeta: Papa, doctor ka beta doctor bana, engineer ka beta engineer!\nPapa: Aur tum?\nBeta: Main toh mazdoor ka beta hoon na papa, toh fail ho gaya! 👷‍♂️📖",
       "Husband: Aaj khane me kya banaya hai?\nWife: Jo tumne kal bola tha na wahi!\nHusband: Par kal toh maine bola tha ki zahar de do!\nWife: Toh bas wahi bana diya hai, chup chap kha lo! 🍜💀🤣",
@@ -608,10 +587,12 @@ class MainAIEngine:
 
         self.classifier.train(self.memory_db)
 
+    # ------------------ EMOJI FIX HERE ------------------
     def clean_text_for_json(self, text):
         if not isinstance(text, str):
             return text
-        return text.strip()
+        return text.strip()  # Ascii strip hata diya taaki Emojis save rahein!
+    # ----------------------------------------------------
 
     def save_memory(self):
         cleaned_db = []
@@ -650,9 +631,9 @@ class MainAIEngine:
 
     def generate_proactive_greeting(self):
         greetings = [
-            f"Hey {self.user_name.capitalize()}! Neural Network active hai, aaj kya chal raha hai? 😎",
-            f"Oi {self.user_name.capitalize()}! Deep Learning model ready hai. Batao kya plan hai? 🚀",
-            f"Yo {self.user_name.capitalize()}! INFINITY-AI neural mode par online hai! 🔥",
+            f"Hey {self.user_name.capitalize()}! Main ready hoon, aaj kya chal raha hai? 😎",
+            f"Oi {self.user_name.capitalize()}! Welcome back. Batao aaj kya plan hai? 🚀",
+            f"Yo {self.user_name.capitalize()}! INFINITY-AI online hai, kaise ho aaj? 🔥",
         ]
         return random.choice(greetings)
 
@@ -748,7 +729,7 @@ class MainAIEngine:
         elif detected_mood == "tired":
             advice_list = [
                 f"{self.user_name.capitalize()} bhai, screen off karo aur 20-min ka power nap le lo! 😴🛌",
-                "Thoda thanda paani piyo aur stretch kar lo, energy wapas aayegi! ✨",
+                "Thoda thanda paani piyo aur stretch kar lo, energy wapas aayegi! 🥤✨",
             ]
             return random.choice(advice_list)
 
@@ -890,8 +871,9 @@ class MainAIEngine:
                         chosen = self.get_non_repeating_choice(item.get("tag"), item["responses"])
                         return chosen.replace("{name}", self.user_name)
 
-        # Neural Network Prediction
-        predicted_tag, score = self.classifier.predict_intent(text_lower, threshold=0.40)
+        predicted_tag, score = self.classifier.predict_intent(
+            text_lower, threshold=0.20
+        )
         if predicted_tag:
             for item in self.memory_db:
                 if (
@@ -903,7 +885,6 @@ class MainAIEngine:
                     chosen = self.get_non_repeating_choice(predicted_tag, item["responses"])
                     return chosen.replace("{name}", self.user_name)
 
-        # Fallback to Fuzzy Match
         fuzzy_item, similarity = self.find_fuzzy_match(text_lower, cutoff=0.55)
         if (
             fuzzy_item
@@ -970,7 +951,7 @@ if __name__ == "__main__":
     ai = MainAIEngine(user_name=user_name)
 
     print("\n========================================================")
-    print(f"  TENSORFLOW NEURAL ENGINE V4.0 | File: {ai.memory_file}")
+    print(f"  FINAL ENGINE V3.6 SMART ACTIVE | File: {ai.memory_file}")
     print("========================================================\n")
 
     print(f"AI: {ai.generate_proactive_greeting()}\n")
@@ -981,7 +962,7 @@ if __name__ == "__main__":
             if user_input.lower() in ["exit", "quit"]:
                 print(
                     f"Session Ended. Permanent Brain saved in {ai.memory_file}!"
-                 )
+                )
                 break
 
             response = ai.respond(user_input)
