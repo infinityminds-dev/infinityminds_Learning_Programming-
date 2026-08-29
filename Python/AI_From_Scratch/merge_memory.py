@@ -33,7 +33,9 @@ def smart_merge_memories():
         if not isinstance(item, dict):
             continue
         tag = item.get("tag", "general")
-        patterns = set(str(p).strip() for p in item.get("patterns", []) if str(p).strip())
+        patterns = set(
+            str(p).strip() for p in item.get("patterns", []) if str(p).strip()
+        )
         responses = list(item.get("responses", []))
         ctx_resp = item.get("context_responses", {})
 
@@ -75,9 +77,11 @@ def smart_merge_memories():
                 for item in friend_data:
                     if not isinstance(item, dict):
                         continue
-                    f_tag = item.get("tag", f"merged_{file_path}")
+                    f_tag = item.get("tag", "general")
                     f_patterns = [
-                        str(p).strip() for p in item.get("patterns", []) if str(p).strip()
+                        str(p).strip()
+                        for p in item.get("patterns", [])
+                        if str(p).strip()
                     ]
                     f_responses = item.get("responses", [])
                     f_ctx = item.get("context_responses", {})
@@ -90,6 +94,7 @@ def smart_merge_memories():
                         }
 
                     for p in f_patterns:
+                        # Fix: Check global pattern map to prevent duplicate learning
                         if p.lower() not in pattern_to_tag:
                             tag_map[f_tag]["patterns"].add(p)
                             pattern_to_tag[p.lower()] = f_tag
@@ -117,14 +122,14 @@ def smart_merge_memories():
                 }
             )
 
-    # 5. Save Back to Master File (ensure_ascii=False zaroori hai emojis ke liye!)
+    # 5. Save Back to Master File
     with open(my_file, "w", encoding="utf-8") as f:
         json.dump(final_master_list, f, indent=2, ensure_ascii=False)
 
     print(
         f"\nSUCCESS! Total {added_patterns_count} naye patterns dosto ki files se '{my_file}' me safely merge ho gaye!"
     )
-    print("V3.6 Neural Engine structure fully intact aur emoji-safe hai. 😎🔥")
+    print("V3.6 & V4.0 Neural Engine structure fully intact. 😎🔥")
 
 
 if __name__ == "__main__":
