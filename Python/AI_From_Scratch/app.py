@@ -125,121 +125,482 @@ HTML_TEMPLATE = """
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Infinity AI Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0e0e0e; color: #fff; margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; }
-        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            background: #09090b;
+            color: #ececec;
+            font-family: 'Inter', -apple-system, sans-serif;
+            overflow: hidden;
+        }
+
+        .app-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100dvh;
+            width: 100%;
+            position: relative;
+        }
+
+        /* Top Bar */
         header { 
-            background: #191919; 
-            padding: 12px 20px; 
+            background: #09090b; 
+            padding: 14px 18px; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            border-bottom: 1px solid #2d2d2d; 
-            flex-wrap: wrap;
-            gap: 12px;
+            flex-shrink: 0;
+            z-index: 10;
+            border-bottom: 1px solid #18181b;
         }
 
-        .header-title h2 { margin: 0; font-size: 18px; color: #fff; }
-        .status { font-size: 11px; color: #aaa; margin-top: 2px; }
-
-        .control-panel { 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            flex-wrap: wrap;
-        }
-
-        select { 
-            background: #121212; 
-            color: #ffc107; 
-            border: 1px solid #444; 
-            padding: 6px 10px; 
-            border-radius: 6px; 
-            outline: none; 
-            font-size: 12px; 
-            font-weight: 500;
+        .icon-btn {
+            background: #18181b;
+            border: 1px solid #27272a;
+            color: #e4e4e7;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s;
         }
-        select:focus { border-color: #ffc107; }
+        .icon-btn:hover { background: #27272a; }
 
-        .btn-action { 
-            background-color: #212529; 
-            color: #ffc107; 
-            border: 1px solid #ffc107; 
-            padding: 6px 12px; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-weight: 600; 
+        .brand-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #f4f4f5;
+            letter-spacing: -0.3px;
+        }
+
+        /* Side Navigation Drawer (Sidebar) */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            z-index: 99;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .sidebar {
+            position: fixed;
+            top: 0; left: -300px;
+            width: 290px;
+            height: 100%;
+            background: #0e0e11;
+            border-right: 1px solid #1f1f23;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 16px;
+            gap: 16px;
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .sidebar.active { left: 0; }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 6px;
+        }
+        .sidebar-title { font-size: 16px; font-weight: 700; color: #fff; }
+
+        .btn-new-chat {
+            background: #18181b;
+            color: #fff;
+            border: 1px solid #27272a;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-new-chat:hover { background: #27272a; border-color: #3f3f46; }
+
+        .sidebar-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #71717a;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* Custom Memory List in Sidebar */
+        .memory-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .memory-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: #141417;
+            border: 1px solid #1f1f24;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #a1a1aa;
+            transition: all 0.2s;
+        }
+        .memory-item:hover { background: #1c1c21; color: #fff; }
+        .memory-item.active {
+            background: #1e1b4b;
+            border-color: #4f46e5;
+            color: #c7d2fe;
+            font-weight: 600;
+        }
+
+        /* Chat Area */
+        .chat-container { 
+            flex: 1; 
+            overflow-y: auto; 
+            -webkit-overflow-scrolling: touch;
+            padding: 16px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .message { 
+            padding: 12px 16px; 
+            border-radius: 14px; 
+            max-width: 85%; 
+            line-height: 1.5; 
+            word-break: break-word; 
+            font-size: 14px; 
+        }
+        .user-msg { 
+            background: #4f46e5; 
+            align-self: flex-end; 
+            color: #ffffff; 
+            border-bottom-right-radius: 4px;
+        }
+        .ai-msg { 
+            background: #141417; 
+            align-self: flex-start; 
+            border: 1px solid #232328; 
+            color: #d1d5db; 
+            border-bottom-left-radius: 4px;
+        }
+        .notice-msg { 
+            background: rgba(234, 179, 8, 0.08); 
+            border: 1px solid rgba(234, 179, 8, 0.25); 
+            color: #fde047; 
+            align-self: center; 
             font-size: 12px; 
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-        .btn-action:hover { 
-            background-color: #ffc107; 
-            color: #121212; 
+            text-align: center; 
+            width: 100%; 
+            border-radius: 10px;
         }
 
-        .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-        .message { padding: 12px 16px; border-radius: 8px; max-width: 80%; line-height: 1.4; word-wrap: break-word; font-size: 14px; }
-        .user-msg { background: #007bff; align-self: flex-end; color: #fff; }
-        .ai-msg { background: #222; align-self: flex-start; border: 1px solid #333; color: #e0e0e0; }
-        .notice-msg { background: #332600; border: 1px solid #ffc107; color: #ffc107; align-self: center; font-size: 13px; text-align: center; max-width: 90%; }
-        
-        .input-box { display: flex; padding: 15px; background: #191919; border-top: 1px solid #2d2d2d; gap: 10px; }
-        input[type="text"] { flex: 1; padding: 12px 15px; border-radius: 6px; border: 1px solid #333; background: #121212; color: #fff; outline: none; font-size: 14px; }
-        input[type="text"]:focus { border-color: #007bff; }
-        
-        button.send-btn { padding: 12px 24px; background: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: background 0.2s; }
-        button.send-btn:hover { background: #218838; }
-
-        @media (max-width: 600px) {
-            header { flex-direction: column; align-items: flex-start; padding: 10px 15px; }
-            .control-panel { width: 100%; justify-content: space-between; gap: 6px; }
-            select, .btn-action { font-size: 11px; padding: 5px 8px; }
-            .message { max-width: 90%; }
+        /* Input Area */
+        .input-wrapper {
+            padding: 12px 16px 20px 16px;
+            background: #09090b;
+            flex-shrink: 0;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
         }
+
+        .input-box { 
+            display: flex; 
+            flex-direction: column;
+            padding: 10px 14px; 
+            background: #131316; 
+            border: 1px solid #232328; 
+            border-radius: 18px;
+            gap: 10px; 
+            transition: border-color 0.2s;
+        }
+        .input-box:focus-within { border-color: #3f3f46; }
+
+        input[type="text"] { 
+            width: 100%;
+            padding: 4px; 
+            border: none;
+            background: transparent; 
+            color: #fff; 
+            outline: none; 
+            font-size: 14px; 
+        }
+        input[type="text"]::placeholder { color: #52525b; }
+
+        .input-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Model Badge Button (Replacing Select Dropdown) */
+        .model-badge-btn {
+            background: #1c1c21;
+            color: #e4e4e7;
+            border: 1px solid #2c2c34;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .model-badge-btn:hover { background: #27272a; border-color: #3f3f46; }
+
+        button.send-btn { 
+            width: 32px;
+            height: 32px;
+            background: #4f46e5; 
+            color: white; 
+            border: none; 
+            border-radius: 50%; 
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: background 0.2s; 
+        }
+        button.send-btn:hover { background: #4338ca; }
+
+        /* Custom Dark Modal Popup (For Models & New File) */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(5px);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .modal-card {
+            background: #121216;
+            border: 1px solid #27272d;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 380px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            animation: modalIn 0.2s ease-out;
+        }
+
+        @keyframes modalIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-title { font-size: 16px; font-weight: 600; color: #fff; }
+
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .model-card-option {
+            background: #18181d;
+            border: 1px solid #232328;
+            border-radius: 12px;
+            padding: 12px 14px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        .model-card-option:hover { background: #22222a; border-color: #3f3f46; }
+        .model-card-option.selected {
+            background: #1e1b4b;
+            border-color: #6366f1;
+        }
+
+        .model-opt-info h4 { font-size: 14px; color: #f4f4f5; font-weight: 600; }
+        .model-opt-info p { font-size: 11px; color: #a1a1aa; margin-top: 2px; }
+
+        .modal-input {
+            width: 100%;
+            background: #18181d;
+            border: 1px solid #27272a;
+            padding: 12px 14px;
+            border-radius: 10px;
+            color: #fff;
+            outline: none;
+            font-size: 14px;
+        }
+        .modal-input:focus { border-color: #4f46e5; }
+
+        .modal-btn-confirm {
+            background: #4f46e5;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .modal-btn-confirm:hover { background: #4338ca; }
     </style>
 </head>
 <body>
-    <header>
-        <div class="header-title">
-            <h2>Infinity AI Hub 🚀</h2>
-            <div class="status">Active: <span id="model-status">{{ model_name }}</span></div>
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-title">Infinity AI Hub</span>
+            <button class="icon-btn" onclick="toggleSidebar()">✕</button>
         </div>
-        <div class="control-panel">
-            <select id="memory-select" onchange="switchMemory()" title="Select Active JSON Memory">
-                {% for mf in memory_files %}
-                    <option value="{{ mf }}" {% if mf == current_memory %}selected{% endif %}>💾 {{ mf }}</option>
-                {% endfor %}
-            </select>
 
-            <select id="model-select" onchange="switchModel()" title="Switch AI Engine">
-                <option value="v4.0" {% if selected_val == 'v4.0' %}selected{% endif %}>v4.0 (Neural)</option>
-                <option value="v3.6" {% if selected_val == 'v3.6' %}selected{% endif %}>v3.6 (Legacy)</option>
-            </select>
+        <button class="btn-new-chat" onclick="openNewFileModal()">
+            <span>➕</span> New JSON Memory
+        </button>
 
-            <button class="btn-action" onclick="createNewJsonFile()" title="Create New Memory File">➕ New JSON</button>
+        <div class="sidebar-section-title">Saved Memories</div>
+        <div class="memory-list-container" id="memory-list">
+            {% for mf in memory_files %}
+                <div class="memory-item {% if mf == current_memory %}active{% endif %}" onclick="selectMemory('{{ mf }}')">
+                    <span>💾</span>
+                    <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ mf }}</span>
+                </div>
+            {% endfor %}
         </div>
-    </header>
-
-    <div class="chat-container" id="chat-box">
-        {% if notice %}
-        <div class="message notice-msg">{{ notice }}</div>
-        {% endif %}
-        <div class="message ai-msg">Hey bro Kaisa hai sab theek, kya karna hai aaj 😎</div>
     </div>
 
-    <div class="input-box">
-        <input type="text" id="user-input" placeholder="Type your message here..." autofocus>
-        <button class="send-btn" onclick="sendMessage()">Send</button>
+    <div class="modal-overlay" id="modelModal" onclick="closeModal('modelModal', event)">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title">Select AI Engine</div>
+                <button class="icon-btn" onclick="closeModalDirect('modelModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="model-card-option {% if selected_val == 'v4.0' %}selected{% endif %}" onclick="selectModel('v4.0')">
+                    <div class="model-opt-info">
+                        <h4>v4.0 (Neural Engine)</h4>
+                        <p>TensorFlow deep-learning classifier with embeddings</p>
+                    </div>
+                    <span>🧠</span>
+                </div>
+                <div class="model-card-option {% if selected_val == 'v3.6' %}selected{% endif %}" onclick="selectModel('v3.6')">
+                    <div class="model-opt-info">
+                        <h4>v3.6 (Smart Legacy)</h4>
+                        <p>Fast keyword similarity engine (Zero-dependency)</p>
+                    </div>
+                    <span>⚡</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="newFileModal" onclick="closeModal('newFileModal', event)">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title">Create New Memory</div>
+                <button class="icon-btn" onclick="closeModalDirect('newFileModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="new-username-input" class="modal-input" placeholder="Enter owner name (e.g. alex)">
+                <button class="modal-btn-confirm" onclick="submitNewJson()">Create File</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-wrapper">
+        <header>
+            <button class="icon-btn" onclick="toggleSidebar()">☰</button>
+            <div class="brand-title">Infinity AI Hub</div>
+            <div style="width: 38px;"></div>
+        </header>
+
+        <div class="chat-container" id="chat-box">
+            {% if notice %}
+            <div class="message notice-msg">{{ notice }}</div>
+            {% endif %}
+            <div class="message ai-msg">Hey bro! Infinity AI Hub custom dark sheet interface ke saath ready hai. 😎</div>
+        </div>
+
+        <div class="input-wrapper">
+            <div class="input-box">
+                <input type="text" id="user-input" placeholder="Message Infinity AI..." autofocus>
+                
+                <div class="input-actions">
+                    <div class="model-badge-btn" onclick="openModal('modelModal')">
+                        <span id="model-badge-text">{% if selected_val == 'v4.0' %}🔴 v4.0 (Neural){% else %}⚡ v3.6 (Legacy){% endif %}</span>
+                        <span style="font-size: 10px;">▼</span>
+                    </div>
+
+                    <button class="send-btn" onclick="sendMessage()">➔</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         const chatBox = document.getElementById('chat-box');
         const userInput = document.getElementById('user-input');
+        let currentSelectedModel = "{{ selected_val }}";
+        let currentSelectedMemory = "{{ current_memory }}";
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModalDirect(id) { document.getElementById(id).classList.remove('active'); }
+        function closeModal(id, event) {
+            if (event.target.id === id) closeModalDirect(id);
+        }
+
+        function openNewFileModal() {
+            toggleSidebar();
+            openModal('newFileModal');
+            setTimeout(() => document.getElementById('new-username-input').focus(), 100);
+        }
 
         userInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') sendMessage();
@@ -273,42 +634,44 @@ HTML_TEMPLATE = """
             }
         }
 
-        async function switchModel() {
-            const selectedModel = document.getElementById('model-select').value;
-            const selectedMemory = document.getElementById('memory-select').value;
-            
+        async function selectModel(modelType) {
+            closeModalDirect('modelModal');
             const response = await fetch('/switch_model', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ model: selectedModel, memory: selectedMemory })
+                body: JSON.stringify({ model: modelType, memory: currentSelectedMemory })
             });
             const data = await response.json();
             
-            document.getElementById('model-select').value = data.selected_val;
-            document.getElementById('model-status').innerText = data.model_name;
-            if (data.notice) {
-                appendMessage(data.notice, 'ai', true);
-            }
+            currentSelectedModel = data.selected_val;
+            document.getElementById('model-badge-text').innerText = data.selected_val === 'v4.0' ? '🔴 v4.0 (Neural)' : '⚡ v3.6 (Legacy)';
+            
+            if (data.notice) appendMessage(data.notice, 'ai', true);
         }
 
-        async function switchMemory() {
-            const selectedMemory = document.getElementById('memory-select').value;
-            const selectedModel = document.getElementById('model-select').value;
-
+        async function selectMemory(memoryFileName) {
+            toggleSidebar();
             const response = await fetch('/switch_memory', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ memory_file: selectedMemory, model: selectedModel })
+                body: JSON.stringify({ memory_file: memoryFileName, model: currentSelectedModel })
             });
             const data = await response.json();
-            if (data.notice) {
-                appendMessage(data.notice, 'ai', true);
-            }
+            currentSelectedMemory = data.current_memory;
+            
+            // Update active state in UI
+            document.querySelectorAll('.memory-item').forEach(el => {
+                if (el.innerText.includes(memoryFileName)) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+
+            if (data.notice) appendMessage(data.notice, 'ai', true);
         }
 
-        async function createNewJsonFile() {
-            const userName = prompt("Enter your name for new Memory file:", "user");
-            if (!userName) return;
+        async function submitNewJson() {
+            const userName = document.getElementById('new-username-input').value.trim() || 'user';
+            closeModalDirect('newFileModal');
+            document.getElementById('new-username-input').value = '';
 
             const response = await fetch('/create_new_json', {
                 method: 'POST',
@@ -316,23 +679,18 @@ HTML_TEMPLATE = """
                 body: JSON.stringify({ user_name: userName })
             });
             const data = await response.json();
-            if (data.notice) {
-                appendMessage(data.notice, 'ai', true);
-            }
-            
-            if (data.model_name) {
-                document.getElementById('model-status').innerText = data.model_name;
-            }
+            if (data.notice) appendMessage(data.notice, 'ai', true);
 
             if (data.memory_files) {
-                const memSelect = document.getElementById('memory-select');
-                memSelect.innerHTML = '';
+                currentSelectedMemory = data.current_memory;
+                const container = document.getElementById('memory-list');
+                container.innerHTML = '';
                 data.memory_files.forEach(file => {
-                    const opt = document.createElement('option');
-                    opt.value = file;
-                    opt.innerText = '💾 ' + file;
-                    if (file === data.current_memory) opt.selected = true;
-                    memSelect.appendChild(opt);
+                    const div = document.createElement('div');
+                    div.className = `memory-item ${file === data.current_memory ? 'active' : ''}`;
+                    div.onclick = () => selectMemory(file);
+                    div.innerHTML = `<span>💾</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${file}</span>`;
+                    container.appendChild(div);
                 });
             }
         }
@@ -340,6 +698,7 @@ HTML_TEMPLATE = """
 </body>
 </html>
 """
+
 
 
 @app.route("/")
