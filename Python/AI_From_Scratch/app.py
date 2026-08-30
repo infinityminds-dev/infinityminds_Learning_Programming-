@@ -17,91 +17,104 @@ startup_notice = ""
 selected_model_val = "v3.6"
 selected_memory_file = ""
 
+
 def check_tensorflow():
-  try:
-    import tensorflow
-    return True
-  except ImportError:
-    return False
+    try:
+        import tensorflow
+
+        return True
+    except ImportError:
+        return False
+
 
 def get_valid_memory_files():
-  """Helper function jo saari bhari hui (>= 50 bytes) JSON files return karta hai"""
-  valid = []
-  for f in glob.glob("ai_memory_*.json"):
-    if os.path.exists(f) and os.path.getsize(f) >= 50:
-      valid.append(f)
-  valid.sort(key=lambda x: os.path.getsize(x), reverse=True)
-  return valid
+    """Helper function jo saari bhari hui (>= 50 bytes) JSON files return karta hai"""
+    valid = []
+    for f in glob.glob("ai_memory_*.json"):
+        if os.path.exists(f) and os.path.getsize(f) >= 50:
+            valid.append(f)
+    valid.sort(key=lambda x: os.path.getsize(x), reverse=True)
+    return valid
+
 
 def load_ai_engine(model_type="v3.6", force_new=False, target_memory=None):
-  global active_ai, current_model_name, startup_notice, selected_model_val, selected_memory_file
+    global active_ai, current_model_name, startup_notice, selected_model_val, selected_memory_file
 
-  tf_available = check_tensorflow()
-  requested_v4 = (model_type == "v4.0")
+    tf_available = check_tensorflow()
+    requested_v4 = model_type == "v4.0"
 
-  if requested_v4 and not tf_available:
-    model_type = "v3.6"
-    selected_model_val = "v3.6"
-    # Clear warning message jab user v4.0 choose karne ki koshish kare
-    startup_notice = "⚠️ Cannot switch to v4.0 (Neural): TensorFlow library is not installed in environment! Auto-fallback to v3.6 Legacy."
-  else:
-    selected_model_val = model_type
-    startup_notice = ""
-
-  try:
-    existing_files = glob.glob("ai_memory_*.json")
-    
-    # 🌟 1st Step: Startup Scan (Purani khali files delete)
-    for f in existing_files:
-      if os.path.exists(f) and os.path.getsize(f) < 50:
-        try:
-          os.remove(f)
-        except:
-          pass
-
-    valid_files = get_valid_memory_files()
-    target_file = target_memory if target_memory else (valid_files[0] if valid_files and not force_new else None)
-    extracted_name = "user"
-
-    if target_file:
-      filename_only = os.path.basename(target_file).replace(".json", "")
-      parts = filename_only.split("_")
-      if len(parts) >= 3 and parts[0] == "ai" and parts[1] == "memory":
-        extracted_name = parts[2]
-
-    selected_memory_file = target_file if target_file else ""
-
-    if model_type == "v4.0" and tf_available:
-      import main_engine as engine_module
-      active_ai = engine_module.MainAIEngine(user_name=extracted_name)
-      current_model_name = "v4.0 (TensorFlow Neural)"
-      startup_notice = f"TensorFlow Engine loaded. File: {target_file if target_file else 'New'} ({extracted_name.capitalize()})"
+    if requested_v4 and not tf_available:
+        model_type = "v3.6"
+        selected_model_val = "v3.6"
+        startup_notice = "⚠️ Cannot switch to v4.0 (Neural): TensorFlow library is not installed in environment! Auto-fallback to v3.6 Legacy."
     else:
-      import v3_6_AI_engine as engine_module
-      
-      if target_file and not force_new:
-        active_ai = engine_module.MainAIEngine(user_name=extracted_name)
-        active_ai.memory_file = target_file
-        active_ai.load_memory()
-        current_model_name = "v3.6 (Legacy Lightweight)"
-        if not (requested_v4 and not tf_available):
-          startup_notice = f"Switched to v3.6. Memory Loaded: {target_file} ({extracted_name.capitalize()})"
-      else:
-        random_id = random.randint(1000, 9999)
-        new_file_name = f"ai_memory_{extracted_name}_{random_id}.json"
-        active_ai = engine_module.MainAIEngine(user_name=extracted_name)
-        active_ai.memory_file = new_file_name
-        active_ai.memory_db = []
-        active_ai.save_memory()
-        selected_memory_file = new_file_name
-        current_model_name = "v3.6 (Legacy Lightweight)"
-        if not (requested_v4 and not tf_available):
-          startup_notice = f"Switched to v3.6. Nayi file bani: {new_file_name}"
-        
-  except Exception as e:
-    active_ai = None
-    current_model_name = "Error"
-    startup_notice = f"Error loading engine: {str(e)}"
+        selected_model_val = model_type
+        startup_notice = ""
+
+    try:
+        existing_files = glob.glob("ai_memory_*.json")
+
+        for f in existing_files:
+            if os.path.exists(f) and os.path.getsize(f) < 50:
+                try:
+                    os.remove(f)
+                except Exception:
+                    pass
+
+        valid_files = get_valid_memory_files()
+        target_file = (
+            target_memory
+            if target_memory
+            else (valid_files[0] if valid_files and not force_new else None)
+        )
+        extracted_name = "user"
+
+        if target_file:
+            filename_only = os.path.basename(target_file).replace(".json", "")
+            parts = filename_only.split("_")
+            if (
+                len(parts) >= 3
+                and parts[0] == "ai"
+                and parts[1] == "memory"
+            ):
+                extracted_name = parts[2]
+
+        selected_memory_file = target_file if target_file else ""
+
+        if model_type == "v4.0" and tf_available:
+            import main_engine as engine_module
+
+            active_ai = engine_module.MainAIEngine(user_name=extracted_name)
+            current_model_name = "v4.0 (TensorFlow Neural)"
+            startup_notice = f"TensorFlow Engine loaded. File: {target_file if target_file else 'New'} ({extracted_name.capitalize()})"
+        else:
+            import v3_6_AI_engine as engine_module
+
+            if target_file and not force_new:
+                active_ai = engine_module.MainAIEngine(user_name=extracted_name)
+                active_ai.memory_file = target_file
+                active_ai.load_memory()
+                current_model_name = "v3.6 (Legacy Lightweight)"
+                if not (requested_v4 and not tf_available):
+                    startup_notice = f"Switched to v3.6. Memory Loaded: {target_file} ({extracted_name.capitalize()})"
+            else:
+                random_id = random.randint(1000, 9999)
+                new_file_name = f"ai_memory_{extracted_name}_{random_id}.json"
+                active_ai = engine_module.MainAIEngine(user_name=extracted_name)
+                active_ai.memory_file = new_file_name
+                active_ai.memory_db = []
+                active_ai.save_memory()
+                selected_memory_file = new_file_name
+                current_model_name = "v3.6 (Legacy Lightweight)"
+                if not (requested_v4 and not tf_available):
+                    startup_notice = (
+                        f"Switched to v3.6. Nayi file bani: {new_file_name}"
+                    )
+
+    except Exception as e:
+        active_ai = None
+        current_model_name = "Error"
+        startup_notice = f"Error loading engine: {str(e)}"
 
 
 initial_model = "v4.0" if check_tensorflow() else "v3.6"
@@ -197,14 +210,12 @@ HTML_TEMPLATE = """
             <div class="status">Active: <span id="model-status">{{ model_name }}</span></div>
         </div>
         <div class="control-panel">
-            <!-- Memory Select Dropdown -->
             <select id="memory-select" onchange="switchMemory()" title="Select Active JSON Memory">
                 {% for mf in memory_files %}
                     <option value="{{ mf }}" {% if mf == current_memory %}selected{% endif %}>💾 {{ mf }}</option>
                 {% endfor %}
             </select>
 
-            <!-- Model Switch Dropdown -->
             <select id="model-select" onchange="switchModel()" title="Switch AI Engine">
                 <option value="v4.0" {% if selected_val == 'v4.0' %}selected{% endif %}>v4.0 (Neural)</option>
                 <option value="v3.6" {% if selected_val == 'v3.6' %}selected{% endif %}>v3.6 (Legacy)</option>
@@ -218,7 +229,7 @@ HTML_TEMPLATE = """
         {% if notice %}
         <div class="message notice-msg">{{ notice }}</div>
         {% endif %}
-        <div class="message ai-msg">Hey bro Kaisa hai sab theek kya karna hai aaj 😎</div>
+        <div class="message ai-msg">Hey bro Kaisa hai sab theek, kya karna hai aaj 😎</div>
     </div>
 
     <div class="input-box">
@@ -313,7 +324,6 @@ HTML_TEMPLATE = """
                 document.getElementById('model-status').innerText = data.model_name;
             }
 
-            // Dropdown dynamically update karo
             if (data.memory_files) {
                 const memSelect = document.getElementById('memory-select');
                 memSelect.innerHTML = '';
@@ -331,130 +341,159 @@ HTML_TEMPLATE = """
 </html>
 """
 
+
 @app.route("/")
 def home():
-  valid_mems = get_valid_memory_files()
-  return render_template_string(
-      HTML_TEMPLATE,
-      model_name=current_model_name,
-      notice=startup_notice,
-      selected_val=selected_model_val,
-      memory_files=valid_mems,
-      current_memory=selected_memory_file
-  )
+    valid_mems = get_valid_memory_files()
+    return render_template_string(
+        HTML_TEMPLATE,
+        model_name=current_model_name,
+        notice=startup_notice,
+        selected_val=selected_model_val,
+        memory_files=valid_mems,
+        current_memory=selected_memory_file,
+    )
+
 
 @app.route("/switch_model", methods=["POST"])
 def switch_model():
-  data = request.json
-  model_type = data.get("model", "v3.6")
-  target_mem = data.get("memory", None)
-  load_ai_engine(model_type, target_memory=target_mem)
-  return jsonify({
-      "status": "success",
-      "model_name": current_model_name,
-      "notice": startup_notice,
-      "selected_val": selected_model_val,
-      "current_memory": selected_memory_file
-  })
+    try:
+        data = request.json or {}
+        model_type = data.get("model", "v3.6")
+        target_mem = data.get("memory", None)
+        load_ai_engine(model_type, target_memory=target_mem)
+        return jsonify(
+            {
+                "status": "success",
+                "model_name": current_model_name,
+                "notice": startup_notice,
+                "selected_val": selected_model_val,
+                "current_memory": selected_memory_file,
+            }
+        )
+    except Exception as e:
+        return jsonify({"status": "error", "notice": str(e)})
+
 
 @app.route("/switch_memory", methods=["POST"])
 def switch_memory():
-  data = request.json
-  target_mem = data.get("memory_file", "")
-  model_type = data.get("model", "v3.6")
-  
-  if target_mem and os.path.exists(target_mem):
-    load_ai_engine(model_type, target_memory=target_mem)
-    return jsonify({
-        "status": "success",
-        "notice": f"Switched active memory to: {target_mem}",
-        "current_memory": selected_memory_file
-    })
-  return jsonify({"status": "error", "notice": "File not found!"})
+    try:
+        data = request.json or {}
+        target_mem = data.get("memory_file", "")
+        model_type = data.get("model", "v3.6")
+
+        if target_mem and os.path.exists(target_mem):
+            load_ai_engine(model_type, target_memory=target_mem)
+            return jsonify(
+                {
+                    "status": "success",
+                    "notice": f"Switched active memory to: {target_mem}",
+                    "current_memory": selected_memory_file,
+                }
+            )
+        return jsonify({"status": "error", "notice": "File not found!"})
+    except Exception as e:
+        return jsonify({"status": "error", "notice": str(e)})
+
 
 @app.route("/create_new_json", methods=["POST"])
 def create_new_json():
-  global active_ai, startup_notice, current_model_name, selected_model_val, selected_memory_file
-  try:
-    import v3_6_AI_engine as engine_module
+    global active_ai, startup_notice, current_model_name, selected_model_val, selected_memory_file
+    try:
+        import v3_6_AI_engine as engine_module
 
-    data = request.json or {}
-    custom_name = data.get("user_name", "user").strip().lower()
-    if not custom_name:
-        custom_name = "user"
+        data = request.json or {}
+        custom_name = data.get("user_name", "user").strip().lower()
+        if not custom_name:
+            custom_name = "user"
 
-    # Step 1: Nayi temporary JSON file banao
-    random_id = random.randint(1000, 9999)
-    new_file_name = f"ai_memory_{custom_name}_{random_id}.json"
+        random_id = random.randint(1000, 9999)
+        new_file_name = f"ai_memory_{custom_name}_{random_id}.json"
 
-    active_ai = engine_module.MainAIEngine(user_name=custom_name)
-    active_ai.memory_file = new_file_name
-    active_ai.memory_db = []
-    active_ai.save_memory()
+        active_ai = engine_module.MainAIEngine(user_name=custom_name)
+        active_ai.memory_file = new_file_name
+        active_ai.memory_db = []
+        active_ai.save_memory()
 
-    # 🌟 Step 2: INSTANT LIVE SCAN (Double Scan logic intact!)
-    all_files = glob.glob("ai_memory_*.json")
-    for f in all_files:
-      if os.path.exists(f) and os.path.getsize(f) < 50:
-        try:
-          os.remove(f)  # Usi time live delete
-        except:
-          pass
+        all_files = glob.glob("ai_memory_*.json")
+        for f in all_files:
+            if os.path.exists(f) and os.path.getsize(f) < 50:
+                try:
+                    os.remove(f)
+                except Exception:
+                    pass
 
-    # 🌟 Step 3: Fast Swap - Top trained file load karo
-    valid_files = get_valid_memory_files()
+        valid_files = get_valid_memory_files()
 
-    if valid_files:
-      best_file = valid_files[0]
-      filename_only = os.path.basename(best_file).replace(".json", "")
-      parts = filename_only.split("_")
-      extracted_name = parts[2] if (len(parts) >= 3 and parts[0] == "ai" and parts[1] == "memory") else custom_name
+        if valid_files:
+            best_file = valid_files[0]
+            filename_only = os.path.basename(best_file).replace(".json", "")
+            parts = filename_only.split("_")
+            extracted_name = (
+                parts[2]
+                if (
+                    len(parts) >= 3
+                    and parts[0] == "ai"
+                    and parts[1] == "memory"
+                )
+                else custom_name
+            )
 
-      active_ai = engine_module.MainAIEngine(user_name=extracted_name)
-      active_ai.memory_file = best_file
-      active_ai.load_memory()
-      selected_memory_file = best_file
-      startup_notice = f"Khali file instant delete kar di gayi. Bhari hui file load ho gayi: {best_file}"
-    else:
-      selected_memory_file = new_file_name
-      startup_notice = f"Nayi file load ho gayi: {new_file_name}"
+            active_ai = engine_module.MainAIEngine(user_name=extracted_name)
+            active_ai.memory_file = best_file
+            active_ai.load_memory()
+            selected_memory_file = best_file
+            startup_notice = f"Khali file instant delete kar di gayi. Bhari hui file load ho gayi: {best_file}"
+        else:
+            selected_memory_file = new_file_name
+            startup_notice = f"Nayi file load ho gayi: {new_file_name}"
 
-    return jsonify({
-        "status": "success", 
-        "notice": startup_notice, 
-        "model_name": current_model_name,
-        "memory_files": get_valid_memory_files(),
-        "current_memory": selected_memory_file
-    })
-  except Exception as e:
-    return jsonify(
-        {"status": "error", "notice": f"Error creating JSON: {str(e)}"}
-    )
+        return jsonify(
+            {
+                "status": "success",
+                "notice": startup_notice,
+                "model_name": current_model_name,
+                "memory_files": get_valid_memory_files(),
+                "current_memory": selected_memory_file,
+            }
+        )
+    except Exception as e:
+        return jsonify(
+            {"status": "error", "notice": f"Error creating JSON: {str(e)}"}
+        )
+
 
 @app.route("/chat", methods=["POST"])
 def chat():
-  global active_ai
-  data = request.json
-  user_msg = data.get("message", "")
-
-  if active_ai:
+    global active_ai
     try:
-      reply = active_ai.respond(user_msg)
-    except Exception as e:
-      # Safe Fallback to v3.6 if v4.0 crashes mid-chat
-      try:
-        import v3_6_AI_engine as engine_module
-        active_ai = engine_module.MainAIEngine()
-        if selected_memory_file and os.path.exists(selected_memory_file):
-          active_ai.memory_file = selected_memory_file
-          active_ai.load_memory()
-        reply = active_ai.respond(user_msg)
-      except:
-        reply = "Error: Active model issue. Switched safely to legacy mode."
-  else:
-    reply = "Error: No AI Engine is currently active!"
+        data = request.json or {}
+        user_msg = data.get("message", "")
 
-  return jsonify({"reply": reply})
+        if active_ai:
+            try:
+                reply = active_ai.respond(user_msg)
+            except Exception as e:
+                try:
+                    import v3_6_AI_engine as engine_module
+
+                    active_ai = engine_module.MainAIEngine()
+                    if selected_memory_file and os.path.exists(
+                        selected_memory_file
+                    ):
+                        active_ai.memory_file = selected_memory_file
+                        active_ai.load_memory()
+                    reply = active_ai.respond(user_msg)
+                except Exception:
+                    reply = "Error: Active model issue. Switched safely to legacy mode."
+        else:
+            reply = "Error: No AI Engine is currently active!"
+
+        return jsonify({"reply": reply})
+    except Exception as e:
+        return jsonify({"reply": f"Server Glitch Handled Safely: {str(e)}"})
+
 
 if __name__ == "__main__":
-  app.run(host="0.0.0.0", port=5000, debug=True)
+    # Fix: debug=False aur use_reloader=False rakha gaya hai taaki background crash na ho
+    app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
