@@ -21,14 +21,13 @@ selected_memory_file = ""
 def check_tensorflow():
     try:
         import tensorflow
-
         return True
     except ImportError:
         return False
 
 
 def get_valid_memory_files():
-    """Helper function jo saari bhari hui (>= 50 bytes) JSON files return karta hai"""
+    """Helper function jo saari valid memory files return karta hai"""
     valid = []
     for f in glob.glob("ai_memory_*.json"):
         if os.path.exists(f) and os.path.getsize(f) >= 50:
@@ -53,7 +52,6 @@ def load_ai_engine(model_type="v3.6", force_new=False, target_memory=None):
 
     try:
         existing_files = glob.glob("ai_memory_*.json")
-
         for f in existing_files:
             if os.path.exists(f) and os.path.getsize(f) < 50:
                 try:
@@ -107,9 +105,7 @@ def load_ai_engine(model_type="v3.6", force_new=False, target_memory=None):
                 selected_memory_file = new_file_name
                 current_model_name = "v3.6 (Legacy Lightweight)"
                 if not (requested_v4 and not tf_available):
-                    startup_notice = (
-                        f"Switched to v3.6. Nayi file bani: {new_file_name}"
-                    )
+                    startup_notice = f"Switched to v3.6. Nayi file bani: {new_file_name}"
 
     except Exception as e:
         active_ai = None
@@ -138,6 +134,8 @@ HTML_TEMPLATE = """
             color: #ececec;
             font-family: 'Inter', -apple-system, sans-serif;
             overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .app-wrapper {
@@ -244,7 +242,10 @@ HTML_TEMPLATE = """
             color: #71717a;
             font-weight: 600;
             margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
         }
+        .sidebar-section-title span { font-size: 9px; color: #52525b; text-transform: none; }
 
         /* Custom Memory List in Sidebar */
         .memory-list-container {
@@ -259,7 +260,7 @@ HTML_TEMPLATE = """
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 10px 12px;
+            padding: 12px 14px;
             background: #141417;
             border: 1px solid #1f1f24;
             border-radius: 10px;
@@ -267,6 +268,7 @@ HTML_TEMPLATE = """
             font-size: 13px;
             color: #a1a1aa;
             transition: all 0.2s;
+            position: relative;
         }
         .memory-item:hover { background: #1c1c21; color: #fff; }
         .memory-item.active {
@@ -288,6 +290,8 @@ HTML_TEMPLATE = """
             max-width: 800px;
             width: 100%;
             margin: 0 auto;
+            -webkit-user-select: text;
+            user-select: text;
         }
 
         .message { 
@@ -352,6 +356,8 @@ HTML_TEMPLATE = """
             color: #fff; 
             outline: none; 
             font-size: 14px; 
+            -webkit-user-select: text;
+            user-select: text;
         }
         input[type="text"]::placeholder { color: #52525b; }
 
@@ -361,7 +367,6 @@ HTML_TEMPLATE = """
             align-items: center;
         }
 
-        /* Model Badge Button (Replacing Select Dropdown) */
         .model-badge-btn {
             background: #1c1c21;
             color: #e4e4e7;
@@ -394,7 +399,7 @@ HTML_TEMPLATE = """
         }
         button.send-btn:hover { background: #4338ca; }
 
-        /* Custom Dark Modal Popup (For Models & New File) */
+        /* Custom Dark Modal Popup */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -415,11 +420,11 @@ HTML_TEMPLATE = """
             border-radius: 20px;
             width: 100%;
             max-width: 380px;
-            padding: 20px;
+            padding: 22px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            gap: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
             animation: modalIn 0.2s ease-out;
         }
 
@@ -438,8 +443,15 @@ HTML_TEMPLATE = """
         .modal-body {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
+
+        .modal-text {
+            font-size: 13px;
+            color: #a1a1aa;
+            line-height: 1.5;
+        }
+        .modal-text b { color: #f43f5e; }
 
         .model-card-option {
             background: #18181d;
@@ -473,7 +485,14 @@ HTML_TEMPLATE = """
         }
         .modal-input:focus { border-color: #4f46e5; }
 
+        .modal-actions-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
         .modal-btn-confirm {
+            flex: 1;
             background: #4f46e5;
             color: #fff;
             border: none;
@@ -485,6 +504,34 @@ HTML_TEMPLATE = """
             transition: background 0.2s;
         }
         .modal-btn-confirm:hover { background: #4338ca; }
+
+        .modal-btn-cancel {
+            flex: 1;
+            background: #1f1f24;
+            color: #d4d4d8;
+            border: 1px solid #2e2e36;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .modal-btn-cancel:hover { background: #27272f; }
+
+        .modal-btn-danger {
+            flex: 1;
+            background: #e11d48;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .modal-btn-danger:hover { background: #be123c; }
     </style>
 </head>
 <body>
@@ -500,10 +547,20 @@ HTML_TEMPLATE = """
             <span>➕</span> New JSON Memory
         </button>
 
-        <div class="sidebar-section-title">Saved Memories</div>
+        <div class="sidebar-section-title">
+            <span>Saved Memories</span>
+            <span>(Hold to Delete)</span>
+        </div>
         <div class="memory-list-container" id="memory-list">
             {% for mf in memory_files %}
-                <div class="memory-item {% if mf == current_memory %}active{% endif %}" onclick="selectMemory('{{ mf }}')">
+                <div class="memory-item {% if mf == current_memory %}active{% endif %}" 
+                     data-file="{{ mf }}"
+                     onmousedown="startPress(this)" 
+                     onmouseup="endPress(this)" 
+                     onmouseleave="cancelPress(this)"
+                     ontouchstart="startPress(this)" 
+                     ontouchend="endPress(this)"
+                     ontouchcancel="cancelPress(this)">
                     <span>💾</span>
                     <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ mf }}</span>
                 </div>
@@ -549,6 +606,22 @@ HTML_TEMPLATE = """
         </div>
     </div>
 
+    <div class="modal-overlay" id="deleteModal" onclick="closeModal('deleteModal', event)">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title">Delete Memory File?</div>
+                <button class="icon-btn" onclick="closeModalDirect('deleteModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-text">Are you sure you want to permanently delete <b id="target-delete-filename"></b>? This action cannot be undone.</p>
+                <div class="modal-actions-row">
+                    <button class="modal-btn-cancel" onclick="closeModalDirect('deleteModal')">Cancel</button>
+                    <button class="modal-btn-danger" onclick="confirmDeleteMemory()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="app-wrapper">
         <header>
             <button class="icon-btn" onclick="toggleSidebar()">☰</button>
@@ -560,7 +633,7 @@ HTML_TEMPLATE = """
             {% if notice %}
             <div class="message notice-msg">{{ notice }}</div>
             {% endif %}
-            <div class="message ai-msg">Hey bro! Infinity AI Hub custom dark sheet interface ke saath ready hai. 😎</div>
+            <div class="message ai-msg">Hey bro! Infinity AI Hub upgraded memory manager ke saath ready hai. 😎</div>
         </div>
 
         <div class="input-wrapper">
@@ -584,6 +657,10 @@ HTML_TEMPLATE = """
         const userInput = document.getElementById('user-input');
         let currentSelectedModel = "{{ selected_val }}";
         let currentSelectedMemory = "{{ current_memory }}";
+        
+        let pressTimer = null;
+        let isLongPressTriggered = false;
+        let fileToDelete = "";
 
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
@@ -649,6 +726,54 @@ HTML_TEMPLATE = """
             if (data.notice) appendMessage(data.notice, 'ai', true);
         }
 
+        /* Hold to Delete Trigger System */
+        function startPress(elem) {
+            isLongPressTriggered = false;
+            pressTimer = setTimeout(() => {
+                isLongPressTriggered = true;
+                const fileName = elem.getAttribute('data-file');
+                promptDeleteModal(fileName);
+            }, 600); // 600ms hold time
+        }
+
+        function endPress(elem) {
+            clearTimeout(pressTimer);
+            if (!isLongPressTriggered) {
+                const fileName = elem.getAttribute('data-file');
+                selectMemory(fileName);
+            }
+        }
+
+        function cancelPress(elem) {
+            clearTimeout(pressTimer);
+        }
+
+        function promptDeleteModal(fileName) {
+            fileToDelete = fileName;
+            document.getElementById('target-delete-filename').innerText = fileName;
+            openModal('deleteModal');
+        }
+
+        async function confirmDeleteMemory() {
+            closeModalDirect('deleteModal');
+            if (!fileToDelete) return;
+
+            const response = await fetch('/delete_memory', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ memory_file: fileToDelete, model: currentSelectedModel })
+            });
+            const data = await response.json();
+            
+            if (data.notice) appendMessage(data.notice, 'ai', true);
+
+            if (data.status === 'success') {
+                currentSelectedMemory = data.current_memory;
+                renderMemoryList(data.memory_files, data.current_memory);
+            }
+            fileToDelete = "";
+        }
+
         async function selectMemory(memoryFileName) {
             toggleSidebar();
             const response = await fetch('/switch_memory', {
@@ -659,13 +784,30 @@ HTML_TEMPLATE = """
             const data = await response.json();
             currentSelectedMemory = data.current_memory;
             
-            // Update active state in UI
             document.querySelectorAll('.memory-item').forEach(el => {
-                if (el.innerText.includes(memoryFileName)) el.classList.add('active');
+                if (el.getAttribute('data-file') === memoryFileName) el.classList.add('active');
                 else el.classList.remove('active');
             });
 
             if (data.notice) appendMessage(data.notice, 'ai', true);
+        }
+
+        function renderMemoryList(memoryFiles, activeFile) {
+            const container = document.getElementById('memory-list');
+            container.innerHTML = '';
+            memoryFiles.forEach(file => {
+                const div = document.createElement('div');
+                div.className = `memory-item ${file === activeFile ? 'active' : ''}`;
+                div.setAttribute('data-file', file);
+                div.onmousedown = function() { startPress(this); };
+                div.onmouseup = function() { endPress(this); };
+                div.onmouseleave = function() { cancelPress(this); };
+                div.ontouchstart = function() { startPress(this); };
+                div.ontouchend = function() { endPress(this); };
+                div.ontouchcancel = function() { cancelPress(this); };
+                div.innerHTML = `<span>💾</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${file}</span>`;
+                container.appendChild(div);
+            });
         }
 
         async function submitNewJson() {
@@ -683,22 +825,13 @@ HTML_TEMPLATE = """
 
             if (data.memory_files) {
                 currentSelectedMemory = data.current_memory;
-                const container = document.getElementById('memory-list');
-                container.innerHTML = '';
-                data.memory_files.forEach(file => {
-                    const div = document.createElement('div');
-                    div.className = `memory-item ${file === data.current_memory ? 'active' : ''}`;
-                    div.onclick = () => selectMemory(file);
-                    div.innerHTML = `<span>💾</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${file}</span>`;
-                    container.appendChild(div);
-                });
+                renderMemoryList(data.memory_files, data.current_memory);
             }
         }
     </script>
 </body>
 </html>
 """
-
 
 
 @app.route("/")
@@ -753,6 +886,35 @@ def switch_memory():
         return jsonify({"status": "error", "notice": "File not found!"})
     except Exception as e:
         return jsonify({"status": "error", "notice": str(e)})
+
+
+@app.route("/delete_memory", methods=["POST"])
+def delete_memory():
+    global selected_memory_file
+    try:
+        data = request.json or {}
+        target_mem = data.get("memory_file", "")
+        model_type = data.get("model", "v3.6")
+
+        if not target_mem or not os.path.exists(target_mem):
+            return jsonify({"status": "error", "notice": "Memory file not found!"})
+
+        os.remove(target_mem)
+
+        valid_files = get_valid_memory_files()
+        next_mem = valid_files[0] if valid_files else None
+        load_ai_engine(model_type, target_memory=next_mem)
+
+        return jsonify(
+            {
+                "status": "success",
+                "notice": f"🗑️ Deleted '{target_mem}' successfully.",
+                "memory_files": valid_files,
+                "current_memory": selected_memory_file,
+            }
+        )
+    except Exception as e:
+        return jsonify({"status": "error", "notice": f"Error deleting file: {str(e)}"})
 
 
 @app.route("/create_new_json", methods=["POST"])
@@ -854,5 +1016,4 @@ def chat():
 
 
 if __name__ == "__main__":
-    # Fix: debug=False aur use_reloader=False rakha gaya hai taaki background crash na ho
     app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
