@@ -1,6 +1,6 @@
 # # 🐍 Python Core Logic & AI Lab
 
-This directory houses my Python practice scripts focusing on algorithm fundamentals, modular programming, data structures, and deep AI architecture built from scratch.
+This directory houses my Python practice scripts focusing on algorithm fundamentals, modular programming and data structure
 
 ---
 
@@ -17,6 +17,6 @@ This directory houses my Python practice scripts focusing on algorithm fundament
 ### 🧠 Core Concepts Covered
 * **Data Structures:** Lists, Dictionaries, Sets, Tuples, and Custom Matrices.
 * **Control Flow:** Loops, Decision Making, and Functional Decomposition.
-* **AI & Mathematics:** Neural Network mechanics, Gradient Descent, Softmax/Sigmoid activations, and Tokenization.
+
 
 > 🛠️ *Aim: Building backend scripting efficiency, algorithmic strength, and AI mechanics from the ground up in Python 3.*
