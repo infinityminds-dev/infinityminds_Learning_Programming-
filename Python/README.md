@@ -8,7 +8,6 @@ This directory houses my Python practice scripts focusing on algorithm fundament
 
 | Sub-Folder / File | Category | Description |
 | :--- | :--- | :--- |
-| `AI_From_Scratch/` | **Artificial Intelligence** | Neural networks, mathematical foundations, and LLM mechanics built without external frameworks. |
 | `DSA.py` | **Data Structures** | Algorithms and fundamental data structure implementations. |
 | `game.py` | **Game Logic** | Basic interactive scripting and core state loops. |
 | `test.py` / `test2.py` | **Experiments** | Rapid prototyping, logic testing, and syntax trials. |
