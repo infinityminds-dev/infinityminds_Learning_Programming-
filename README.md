@@ -3,6 +3,13 @@
 ![Status](https://img.shields.io/badge/STATUS-ACTIVE%20LEARNING-brightgreen)
 ![Focus](https://img.shields.io/badge/FOCUS-C%23%20%7C%20PYTHON%20%7C%20LOGIC-blue)
 
+> 🚨 **NOTICE**: This repository is archived! The latest, updated, and active version of this AI Engine has moved to:
+> 
+> 👉 **[Infinity-AI-Hub](https://github.com/infinityminds-dev/Infinity-AI-Hub)** 👈
+> 
+> Please check out the new repository for updated code, bug fixes, and mobile-optimized features!
+> 
+
 📌 **About This Repository**
 
 This repository contains my personal programming practice codes, syntax logic, algorithm testing, and mini-exercises as I master various software development languages and core system architecture.
