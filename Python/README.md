@@ -1,5 +1,12 @@
 # 🐍 Python Core Logic & Algorithms Lab
 
+> 🚨 **NOTICE**: This repository is archived! The latest, updated, and active version of this AI Engine has moved to:
+> 
+> 👉 **[Infinity-AI-Hub](https://github.com/infinityminds-dev/Infinity-AI-Hub)** 👈
+> 
+> Please check out the new repository for updated code, bug fixes, and mobile-optimized features!
+> 
+
 This directory houses my Python practice scripts focusing on algorithm fundamentals, modular programming, and core data structure implementations.
 
 ---
